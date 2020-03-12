@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Matcher</title>
+    <script
+            src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js">
+    </script>
+</head>
+<body>
+
+    <div id="app">
+        <login-screen
+        >
+        </login-screen>
+    </div>
+
+    <script>
+        Vue.component('login-screen', {
+        data() {
+            return {
+                email: undefined,
+                password: undefined,
+                errorMessage: "",
+            }
+        },
+        template: `
+            <div>
+            <input
+                placeholder="name"
+                v-model="name"/>
+
+            <input
+                placeholder="email"
+                v-model="email" />
+
+            <input
+                placeholder="password"
+                v-model="password" />
+
+            {{ errorMessage }}
+
+            <button v-on:click="confirmUser">login</button>
+            </div>
+        `,
+        methods: {
+            confirmUser() {
+                if (!this.email) {
+                    this.errorMessage = "Your email address is required";
+                    return;
+                }
+
+                if (!this.password) {
+                    this.errorMessage = "A password is required";
+                    return;
+                }
+
+                this.errorMessage = "";
+
+                this.$emit('user-confirmed', this.name, this.email, this.password);
+            }
+        }
+        });
+
+        const app = new Vue ({
+            el: '#app',
+
+            data: {
+                user: undefined;
+            },
+
+            computed: {
+                userLogedIn() {
+                    return this.user != undefined;
+                }
+            },
+
+            methods: {
+                async logIn(name, email, password) {
+                    const response = await fetch('api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name: name, email: email, password: password })
+                    });
+                    const user = await response.json();
+
+                    this.user = user;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

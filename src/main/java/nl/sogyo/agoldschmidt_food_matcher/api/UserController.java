@@ -13,13 +13,19 @@ public class UserController {
     private UserDao userDao;
 
     @PostMapping(path="/login")
-    public @ResponseBody String addNewUser (@RequestParam String name, @RequestParam String email, @RequestParam String password) {
-        User newUser = new User();
-        newUser.setName(name);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        userDao.save(newUser);
-        return "User created in Database";
+    public @ResponseBody User addNewUser (@RequestParam String name, @RequestParam String email, @RequestParam String password) {
+        if (userDao.findByEmail(email).size() == 0) {
+            User newUser = new User();
+            newUser.setName(name);
+            newUser.setEmail(email);
+            newUser.setPassword(password);
+            userDao.save(newUser);
+            return newUser;
+        } else if (userDao.findByEmail(email).size() > 0 && userDao.findByEmail(email).get(0).getPassword().equals(password)) {
+            return userDao.findByEmail(email).get(0);
+        } else {
+            return null;
+        }
     }
 
     @GetMapping(path="/admin")
