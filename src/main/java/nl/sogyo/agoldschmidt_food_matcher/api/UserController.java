@@ -7,13 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping(path="/")
+@RequestMapping(path="")
 public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="/login")
-    public @ResponseBody User addNewUser (@RequestParam String name, @RequestParam String email, @RequestParam String password) {
+    @PostMapping(path="login")
+    public @ResponseBody User addNewUser (@RequestBody String name, @RequestBody String email, @RequestBody String password) {
         if (userDao.findByEmail(email).size() == 0) {
             User newUser = new User();
             newUser.setName(name);

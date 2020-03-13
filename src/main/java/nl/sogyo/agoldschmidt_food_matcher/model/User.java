@@ -1,6 +1,7 @@
 package nl.sogyo.agoldschmidt_food_matcher.model;
 
 import org.hibernate.annotations.Table;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,8 +17,10 @@ public class User {
 
     private String name;
 
+    @NonNull
     private String email;
 
+    @NonNull
     private String password;
 
     public Integer getUser_id() {
