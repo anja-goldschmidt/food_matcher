@@ -12,8 +12,8 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="login", consumes = {"application/x-www-form-urlencoded"})
-    public @ResponseBody User addNewUser (User user) {
+    @PostMapping(path="login")
+    public @ResponseBody User addNewUser (@RequestBody User user) {
         if (userDao.findByEmail(user.getEmail()).size() == 0) {
             User newUser = new User();
             newUser.setName(user.getName());
