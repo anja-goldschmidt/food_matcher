@@ -12,17 +12,17 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="login")
-    public @ResponseBody User addNewUser (@RequestBody String name, @RequestBody String email, @RequestBody String password) {
-        if (userDao.findByEmail(email).size() == 0) {
+    @PostMapping(path="login", consumes = {"application/x-www-form-urlencoded"})
+    public @ResponseBody User addNewUser (User user) {
+        if (userDao.findByEmail(user.getEmail()).size() == 0) {
             User newUser = new User();
-            newUser.setName(name);
-            newUser.setEmail(email);
-            newUser.setPassword(password);
+            newUser.setName(user.getName());
+            newUser.setEmail(user.getEmail());
+            newUser.setPassword(user.getPassword());
             userDao.save(newUser);
             return newUser;
-        } else if (userDao.findByEmail(email).size() > 0 && userDao.findByEmail(email).get(0).getPassword().equals(password)) {
-            return userDao.findByEmail(email).get(0);
+        } else if (userDao.findByEmail(user.getEmail()).size() > 0 && userDao.findByEmail(user.getEmail()).get(0).getPassword().equals(user.getPassword())) {
+            return userDao.findByEmail(user.getEmail()).get(0);
         } else {
             return null;
         }

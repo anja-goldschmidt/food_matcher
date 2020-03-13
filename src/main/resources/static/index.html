@@ -100,9 +100,6 @@
 
             methods: {
                 async logIn(name, email, password) {
-                    console.log("input name: " + name);
-                    console.log("input email: " + email);
-                    console.log("input password: " + password);
                     const response = await fetch('login', {
                         method: 'POST',
                         headers: {
