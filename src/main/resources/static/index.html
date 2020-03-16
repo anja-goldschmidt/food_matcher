@@ -93,7 +93,6 @@
 
             computed: {
                 userLoggedIn() {
-                    console.log("Inside userLoggedIn()...");
                     return this.user != undefined;
                 }
             },
@@ -111,7 +110,6 @@
                     const user = await response.json();
 
                     this.user = user;
-                    console.log("Inside logIn()...");
                     console.log(user);
                 }
             }
