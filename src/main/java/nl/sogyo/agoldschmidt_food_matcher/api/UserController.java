@@ -14,15 +14,11 @@ public class UserController {
 
     @PostMapping(path="login")
     public @ResponseBody User addNewUser (@RequestBody User user) {
-        if (userDao.findByEmail(user.getEmail()).size() == 0) {
-            User newUser = new User();
-            newUser.setName(user.getName());
-            newUser.setEmail(user.getEmail());
-            newUser.setPassword(user.getPassword());
-            userDao.save(newUser);
-            return newUser;
-        } else if (userDao.findByEmail(user.getEmail()).size() > 0 && userDao.findByEmail(user.getEmail()).get(0).getPassword().equals(user.getPassword())) {
-            return userDao.findByEmail(user.getEmail()).get(0);
+        if (userDao.findByEmail(user.getEmail()) == null) {
+            userDao.save(user);
+            return user;
+        } else if (userDao.findByEmail(user.getEmail()) != null && userDao.findByEmail(user.getEmail()).getPassword().equals(user.getPassword())) {
+            return userDao.findByEmail(user.getEmail());
         } else {
             return null;
         }
