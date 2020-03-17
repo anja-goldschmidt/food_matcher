@@ -3,6 +3,8 @@ package nl.sogyo.agoldschmidt_food_matcher.model;
 import org.hibernate.annotations.Table;
 import org.springframework.lang.NonNull;
 
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,8 +33,10 @@ public class Address{
     @NonNull
     private String country;
 
-    public Integer getAddress_id() {
-        return address_id;
+    private Map<String, Double> gpsPoints;
+
+    public Map<String, Double> getGpsPoints() {
+        return this.gpsPoints;
     }
 
     public void setAddress_id(Integer address_id) {
@@ -40,7 +44,7 @@ public class Address{
     }
 
     public String getStreetName() {
-        return streetName;
+        return this.streetName;
     }
 
     public void setStreetName(String streetName) {
@@ -48,7 +52,7 @@ public class Address{
     }
 
     public String getHouseNumber() {
-        return houseNumber;
+        return this.houseNumber;
     }
 
     public void setHouseNumber(String houseNumber) {
@@ -77,6 +81,14 @@ public class Address{
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public void setGpsPoints(Map<String, Double> gpsPoints) {
+        this.gpsPoints = gpsPoints;
+    }
+
+    public Integer getAddress_id() {
+        return this.address_id;
     }
 
 }

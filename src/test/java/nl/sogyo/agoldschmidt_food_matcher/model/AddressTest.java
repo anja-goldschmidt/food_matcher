@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AddressTest {
 
     Address address;
@@ -53,6 +56,13 @@ public class AddressTest {
     public void testCountry() {
         address.setCountry("the Netherlands");
         assertEquals("the Netherlands", address.getCountry());
+    }
+
+    @Test
+    public void testGpsPoints() {
+        Map<String, Double> gpsPoints = new HashMap <String, Double>();
+        address.setGpsPoints(gpsPoints);
+        assertEquals(gpsPoints, address.getGpsPoints());
     }
 
 }

@@ -28,7 +28,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(path="/admin")
+    @GetMapping(path="/adminUser")
     public @ResponseBody Iterable<User> getAllUsers() {
         return userDao.findAll();
     }
