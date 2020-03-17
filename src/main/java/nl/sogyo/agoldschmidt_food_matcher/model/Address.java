@@ -33,10 +33,14 @@ public class Address{
     @NonNull
     private String country;
 
-    private Map<String, Double> gpsPoints;
+    @NonNull
+    private Double longitude;
 
-    public Map<String, Double> getGpsPoints() {
-        return this.gpsPoints;
+    @NonNull
+    private Double latitude;
+
+    public Integer getAddress_id() {
+        return this.address_id;
     }
 
     public void setAddress_id(Integer address_id) {
@@ -83,12 +87,20 @@ public class Address{
         this.country = country;
     }
 
-    public void setGpsPoints(Map<String, Double> gpsPoints) {
-        this.gpsPoints = gpsPoints;
+    public Double getLongitude() {
+        return this.longitude;
     }
 
-    public Integer getAddress_id() {
-        return this.address_id;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return this.latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
 }

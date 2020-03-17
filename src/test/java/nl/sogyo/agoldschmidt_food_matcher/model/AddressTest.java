@@ -42,8 +42,8 @@ public class AddressTest {
 
     @Test
     public void testPostCode() {
-        address.setPostCode("3731 GA");
-        assertEquals("3731 GA", address.getPostCode());
+        address.setPostCode("3731GA");
+        assertEquals("3731GA", address.getPostCode());
     }
 
     @Test
@@ -59,10 +59,15 @@ public class AddressTest {
     }
 
     @Test
-    public void testGpsPoints() {
-        Map<String, Double> gpsPoints = new HashMap <String, Double>();
-        address.setGpsPoints(gpsPoints);
-        assertEquals(gpsPoints, address.getGpsPoints());
+    public void testLongitude() {
+        address.setLongitude(5.171251);
+        assertEquals(5.171251, address.getLongitude());
+    }
+    
+    @Test
+    public void testLatitude() {
+        address.setLatitude(52.101791);
+        assertEquals(52.101791, address.getLatitude());
     }
 
 }
