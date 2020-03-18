@@ -3,8 +3,6 @@ package nl.sogyo.agoldschmidt_food_matcher.model;
 import org.hibernate.annotations.Table;
 import org.springframework.lang.NonNull;
 
-import java.util.Map;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
