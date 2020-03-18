@@ -49,6 +49,9 @@ public class Demand {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @NonNull
+    private Integer range;
+
     public Integer getDemand_id() {
         return this.demand_id;
     }
@@ -123,5 +126,13 @@ public class Demand {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public Integer getRange() {
+        return this.range;
+    }
+
+    public void setRange(Integer range) {
+        this.range = range;
     }
 }

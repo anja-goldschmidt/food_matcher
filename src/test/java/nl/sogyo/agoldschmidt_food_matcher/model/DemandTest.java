@@ -90,4 +90,10 @@ public class DemandTest {
         demand.setAddress(address);
         assertEquals(address, demand.getAddress());
     }
+
+    @Test
+    public void testRange() {
+        demand.setRange(250);
+        assertEquals(250, demand.getRange());
+    }
 }
