@@ -53,22 +53,22 @@ public class OfferTest {
         assertEquals(true, offer.isAvailable());
     }
 
-    // @Test
-    // public void testDemandNotNull() {
-    //     Demand demand = new Demand();
-    //     offer.setAvailable(false);
-    //     offer.setDemand(demand);
-    //     assertEquals(demand, offer.getDemand());
-    // }
+    @Test
+    public void testDemandNotNull() {
+        Demand demand = new Demand();
+        offer.setAvailable(false);
+        offer.setDemand(demand);
+        assertEquals(demand, offer.getDemand());
+    }
 
-    // @Test
-    // public void testDemandNull() {
-    //     offer.setAvailable(true);
-    //     Demand demand = new Demand();
-    //     demand.setDemand_id(1);
-    //     offer.setDemand(demand);
-    //     assertNull(offer.getDemand());
-    // }
+    @Test
+    public void testDemandNull() {
+        offer.setAvailable(true);
+        Demand demand = new Demand();
+        demand.setDemand_id(1);
+        offer.setDemand(demand);
+        assertNull(offer.getDemand());
+    }
 
     @Test
     public void testExpiryDate() {

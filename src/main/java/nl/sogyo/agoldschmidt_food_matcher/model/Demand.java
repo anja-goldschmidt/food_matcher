@@ -14,11 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-@Table(appliesTo = "offer")
-public class Offer{
+@Table(appliesTo = "demand")
+public class Demand {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer offer_id;
+    private Integer demand_id;
 
     @NonNull
     private LocalDate dateOfPlacing;
@@ -33,8 +33,8 @@ public class Offer{
     private boolean available;
 
     @OneToOne
-    @JoinColumn(name = "demand_id")
-    private Demand demand;
+    @JoinColumn(name = "offer_id")
+    private Offer offer;
 
     @NonNull
     private LocalDate expiryDate;
@@ -49,12 +49,12 @@ public class Offer{
     @JoinColumn(name = "address_id")
     private Address address;
 
-    public Integer getOffer_id() {
-        return this.offer_id;
+    public Integer getDemand_id() {
+        return this.demand_id;
     }
 
-    public void setOffer_id(Integer offer_id) {
-        this.offer_id = offer_id;
+    public void setDemand_id(Integer demand_id) {
+        this.demand_id = demand_id;
     }
 
     public LocalDate getDateOfPlacing() {
@@ -89,15 +89,15 @@ public class Offer{
         this.available = available;
     }
 
-    public Demand getDemand() {
-        return this.demand;
+    public Offer getOffer() {
+        return this.offer;
     }
 
-    public void setDemand(Demand demand) {
+    public void setOffer(Offer offer) {
         if (!isAvailable()) {
-            this.demand = demand;
+            this.offer = offer;
         } else {
-            this.demand = null;
+            this.offer = null;
         }
     }
 
@@ -124,5 +124,4 @@ public class Offer{
     public void setAddress(Address address) {
         this.address = address;
     }
-
 }
