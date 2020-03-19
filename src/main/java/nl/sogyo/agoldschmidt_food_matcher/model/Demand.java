@@ -21,9 +21,6 @@ public class Demand {
     private Integer demand_id;
 
     @NonNull
-    private LocalDate dateOfPlacing;
-
-    @NonNull
     private String contentType;
 
     @NonNull
@@ -58,14 +55,6 @@ public class Demand {
 
     public void setDemand_id(Integer demand_id) {
         this.demand_id = demand_id;
-    }
-
-    public LocalDate getDateOfPlacing() {
-        return this.dateOfPlacing;
-    }
-
-    public void setDateOfPlacing(LocalDate dateOfPlacing) {
-        this.dateOfPlacing = dateOfPlacing;
     }
 
     public String getContentType() {

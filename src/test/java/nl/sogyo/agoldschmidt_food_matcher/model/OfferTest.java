@@ -29,13 +29,6 @@ public class OfferTest {
     }
 
     @Test
-    public void testDateOfPlacing() {
-        offer.setDateOfPlacing(LocalDate.now());
-        assertNotNull(offer.getDateOfPlacing());
-        assertTrue(offer.getDateOfPlacing() instanceof LocalDate);
-    }
-
-    @Test
     public void testContentType() {
         offer.setContentType("beetroot");
         assertEquals("beetroot", offer.getContentType());

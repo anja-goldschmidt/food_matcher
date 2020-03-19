@@ -29,13 +29,6 @@ public class DemandTest {
     }
 
     @Test
-    public void testDateOfPlacing() {
-        demand.setDateOfPlacing(LocalDate.now());
-        assertNotNull(demand.getDateOfPlacing());
-        assertTrue(demand.getDateOfPlacing() instanceof LocalDate);
-    }
-
-    @Test
     public void testContentType() {
         demand.setContentType("beetroot");
         assertEquals("beetroot", demand.getContentType());

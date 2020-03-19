@@ -1,6 +1,7 @@
 package nl.sogyo.agoldschmidt_food_matcher.model;
 
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
@@ -20,15 +21,14 @@ public class Offer{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer offer_id;
 
-    private LocalDate dateOfPlacing;
-
     @NonNull
     private String contentType;
 
     @NonNull
     private Integer contentQuantity;
 
-    private boolean available;
+    @Type(type="true_false")
+    private Boolean available;
 
     @OneToOne
     @JoinColumn(name = "demand_id")
@@ -52,14 +52,6 @@ public class Offer{
 
     public void setOffer_id(Integer offer_id) {
         this.offer_id = offer_id;
-    }
-
-    public LocalDate getDateOfPlacing() {
-        return this.dateOfPlacing;
-    }
-
-    public void setDateOfPlacing(LocalDate dateOfPlacing) {
-        this.dateOfPlacing = dateOfPlacing;
     }
 
     public String getContentType() {
