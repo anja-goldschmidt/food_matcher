@@ -5,4 +5,5 @@ import nl.sogyo.agoldschmidt_food_matcher.model.User;
 
 public interface UserDao extends CrudRepository<User, Integer> {
     User findByEmail(String email);
+    User findByUser_id(Integer user_id);
 }

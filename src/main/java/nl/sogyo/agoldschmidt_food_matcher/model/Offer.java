@@ -20,7 +20,6 @@ public class Offer{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer offer_id;
 
-    @NonNull
     private LocalDate dateOfPlacing;
 
     @NonNull
@@ -29,14 +28,12 @@ public class Offer{
     @NonNull
     private Integer contentQuantity;
 
-    @NonNull
     private boolean available;
 
     @OneToOne
     @JoinColumn(name = "demand_id")
     private Demand demand;
 
-    @NonNull
     private LocalDate expiryDate;
 
     @NonNull
