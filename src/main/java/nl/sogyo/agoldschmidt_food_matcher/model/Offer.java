@@ -27,6 +27,9 @@ public class Offer{
     @NonNull
     private Integer contentQuantity;
 
+    @NonNull
+    private LocalDate expiryDate;
+
     @Type(type="true_false")
     private Boolean available;
 
@@ -34,17 +37,15 @@ public class Offer{
     @JoinColumn(name = "demand_id")
     private Demand demand;
 
-    private LocalDate expiryDate;
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @NonNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
 
     public Integer getOffer_id() {
         return this.offer_id;
@@ -70,6 +71,14 @@ public class Offer{
         this.contentQuantity = contentQuantity;
     }
 
+    public LocalDate getExpiryDate() {
+        return this.expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
     public boolean isAvailable() {
         return this.available;
     }
@@ -90,12 +99,12 @@ public class Offer{
         }
     }
 
-    public LocalDate getExpiryDate() {
-        return this.expiryDate;
+    public Address getAddress() {
+        return this.address;
     }
 
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public User getUser() {
@@ -104,14 +113,6 @@ public class Offer{
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Address getAddress() {
-        return this.address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
 }

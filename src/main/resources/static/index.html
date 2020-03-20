@@ -17,7 +17,9 @@
 
         <profile-screen
             v-else
-            v-bind:user="user">
+            v-bind:user="user"
+            v-bind:offer="offer"
+            v-on:offer-created="createOffer">
         </profile-screen>
     </div>
 
@@ -70,38 +72,132 @@
         });
 
         Vue.component('profile-screen', {
-            props: [ 'user' ],
+            props: [ 'user' , 'offer'],
             template: `
                 <div>
-                    Your user id: {{user.user_id}}
-                    <br />
-                    Your name: {{user.name}}
-                    <br />
-                    Your email-address: {{user.email}}
-                    <br />
-                    Your password: {{user.password}}
-                    <br />
                     <table style="width: 100%;" border="1">
                         <tbody>
                             <tr>
-                                <td>user</td>
-                                <td>user_data</td>
+                                <td>personal information: </td>
+                                <td>
+                                    Your user id: {{user.user_id}}
+                                    <br />
+                                    Your name: {{user.name}}
+                                    <br />
+                                    Your email-address: {{user.email}}
+                                    <br />
+                                    Your password: {{user.password}}
+                                </td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>offer</td>
-                                <td>offer_data</td>
-                                <td>create offer</td>
+                                <td>offers: </td>
+                                <td>
+                                    Your offers:
+                                </td>
+                                <td>
+                                    <input
+                                        placeholder="contentType"
+                                        v-model="contentType"/>
+                                    <input
+                                        placeholder="contentQuantity"
+                                        v-model="contentQuantity"/>
+                                    <input
+                                        placeholder="expiryDate: dd mm yyyy"
+                                        v-model="expiryDate"/>
+                                    <input
+                                        placeholder="streetName"
+                                        v-model="streetName"/>
+                                    <input
+                                        placeholder="houseNumber"
+                                        v-model="houseNumber"/>
+                                    <input
+                                        placeholder="postCode"
+                                        v-model="postCode"/>
+                                    <input
+                                        placeholder="city"
+                                        v-model="city"/>
+                                    <input
+                                        placeholder="country"
+                                        v-model="country"/>
+                                    <input
+                                        placeholder="latitude"
+                                        v-model="latitude"/>
+                                    <input
+                                        placeholder="longitude"
+                                        v-model="longitude"/>
+                                    
+                                    {{ errorMessage }}
+
+                                    <button v-on:click="createOffer">create offer</button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>demand</td>
+                                <td>demands: </td>
                                 <td>demand_data</td>
                                 <td>create demand</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            `
+            `,
+            methods: {
+            createOffer() {
+                if (!this.contentType) {
+                    this.errorMessage = "You need to specify what you have to offer.";
+                    return;
+                }
+
+                if (!this.contentQuantity) {
+                    this.errorMessage = "You need to specify how much you have to offer.";
+                    return;
+                }
+
+                if (!this.expiryDate) {
+                    this.errorMessage = "You need to specify how long your offer is available. Please use the format: dd mm yyyy (e.g. 06 01 2020).";
+                    return;
+                }
+
+                if (!this.streetName) {
+                    this.errorMessage = "You need to specify the street where people can pick up your offer.";
+                    return;
+                }
+
+                if (!this.houseNumber) {
+                    this.errorMessage = "You need to specify the house number where people can pick up your offer.";
+                    return;
+                }
+
+                if (!this.postCode) {
+                    this.errorMessage = "You need to specify the post code where people can pick up your offer.";
+                    return;
+                }
+
+                if (!this.city) {
+                    this.errorMessage = "You need to specify the city where people can pick up your offer.";
+                    return;
+                }
+
+                if (!this.country) {
+                    this.errorMessage = "You need to specify the country where people can pick up your offer.";
+                    return;
+                }
+
+                if (!this.latitude) {
+                    this.errorMessage = "You need to specify the latitude where people can pick up your offer.";
+                    return;
+                }
+
+                if (!this.longitude) {
+                    this.errorMessage = "You need to specify the longitude where people can pick up your offer.";
+                    return;
+                }
+
+                this.errorMessage = "";
+
+                this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, user.user_id);
+            }
+            }
         });
 
         const app = new Vue ({
@@ -109,11 +205,15 @@
 
             data: {
                 user: undefined,
+                offer: undefined
             },
 
             computed: {
                 userLoggedIn() {
                     return this.user != undefined;
+                },
+                offerCreated() {
+                    return this.offer != undefined;
                 }
             },
 
@@ -130,7 +230,19 @@
                     const user = await response.json();
 
                     this.user = user;
-                    console.log(user);
+                },
+                async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, user_id) {
+                    const response = await fetch('profilepage/offer', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, user_id: user_id})
+                    });
+                    const offer = await response.json();
+
+                    this.offer = offer;
                 }
             }
         });
