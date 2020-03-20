@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,16 +39,8 @@ public class DemandOfferController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="/offer")
-    public @ResponseBody Offer addNewOffer(@RequestBody Offer offer) {
-        System.out.println("This should be the offer's content type: ");
-        System.out.println(offer.getContentType());
-        System.out.println("This should be the offer's content quantity: ");
-        System.out.println(offer.getContentQuantity());
-        System.out.println("This should be the offer's expiry date: ");
-        System.out.println(offer.getExpiryDate());
-        System.out.println("This should be the offer's user: ");
-        System.out.println(offer.getUser());
+    @PostMapping(path="/offer", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public @ResponseBody Offer addNewOffer(MultiValueMap<Object, Object> formParams) {
         // offer.setAvailable(true);
         // if (addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()) == null) {
         //     addressDao.save(offer.getAddress());
