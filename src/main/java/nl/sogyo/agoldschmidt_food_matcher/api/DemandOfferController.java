@@ -39,18 +39,26 @@ public class DemandOfferController {
 
     @PostMapping(path="/offer")
     public @ResponseBody Offer addNewOffer(@RequestBody Offer offer) {
-        offer.setAvailable(true);
-        if (addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()) == null) {
-            addressDao.save(offer.getAddress());
-        } else {
-            offer.setAddress(addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()));
-        }
-        ArrayList<User> userList = new ArrayList<>();
-        userDao.findById(offer.getUser().getUser_id()).ifPresent(userList::add);
-        User user = userList.get(0);
-        offer.setUser(user);
-        offerDao.save(offer);
-        return offer;
+        System.out.println("This should be the offer's content type: ");
+        System.out.println(offer.getContentType());
+        System.out.println("This should be the offer's content quantity: ");
+        System.out.println(offer.getContentQuantity());
+        System.out.println("This should be the offer's expiry date: ");
+        System.out.println(offer.getExpiryDate());
+        System.out.println("This should be the offer's user: ");
+        System.out.println(offer.getUser());
+        // offer.setAvailable(true);
+        // if (addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()) == null) {
+        //     addressDao.save(offer.getAddress());
+        // } else {
+        //     offer.setAddress(addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()));
+        // }
+        // ArrayList<User> userList = new ArrayList<>();
+        // userDao.findById(offer.getUser().getUser_id()).ifPresent(userList::add);
+        // User user = userList.get(0);
+        // offer.setUser(user);
+        // offerDao.save(offer);
+        return null;
         // Offer offer = new Offer();
         // offer.setContentType(contentType);
         // offer.setContentQuantity(Integer.valueOf(contentQuantity));

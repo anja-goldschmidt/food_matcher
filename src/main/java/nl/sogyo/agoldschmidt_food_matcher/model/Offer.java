@@ -2,6 +2,7 @@ package nl.sogyo.agoldschmidt_food_matcher.model;
 
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class Offer{
     private Integer contentQuantity;
 
     @NonNull
+    @DateTimeFormat(pattern = "dd MM yyyy")
     private LocalDate expiryDate;
 
     @Type(type="true_false")

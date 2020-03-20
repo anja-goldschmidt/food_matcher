@@ -102,7 +102,8 @@
                                     <input
                                         placeholder="contentQuantity"
                                         v-model="contentQuantity"/>
-                                    <input
+                                    <input 
+                                        type="date"
                                         placeholder="expiryDate: dd mm yyyy"
                                         v-model="expiryDate"/>
                                     <input
@@ -143,6 +144,9 @@
             `,
             methods: {
             createOffer() {
+
+                console.log("Inside createOffer method of vue-component profilescreen...");
+
                 if (!this.contentType) {
                     this.errorMessage = "You need to specify what you have to offer.";
                     return;
@@ -195,7 +199,7 @@
 
                 this.errorMessage = "";
 
-                this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, user.user_id);
+                this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.user.user_id);
             }
             }
         });
@@ -213,6 +217,7 @@
                     return this.user != undefined;
                 },
                 offerCreated() {
+                    console.log("Inside 'offerCreated' computed method of vue app...");
                     return this.offer != undefined;
                 }
             },
@@ -232,6 +237,7 @@
                     this.user = user;
                 },
                 async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, user_id) {
+                    console.log("Inside 'createOffer' method of vue app...");
                     const response = await fetch('profilepage/offer', {
                         method: 'POST',
                         headers: {
