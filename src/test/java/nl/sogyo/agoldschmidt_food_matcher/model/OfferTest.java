@@ -65,7 +65,7 @@ public class OfferTest {
 
     @Test
     public void testExpiryDate() {
-        offer.setExpiryDate(LocalDate.of(2020, Month.DECEMBER, 24));
+        offer.setExpiryDate("24 12 2020");
         assertNotNull(offer.getExpiryDate());
         assertTrue(offer.getExpiryDate() instanceof LocalDate);
     }

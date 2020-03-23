@@ -145,8 +145,6 @@
             methods: {
             createOffer() {
 
-                console.log("Inside createOffer method of vue-component profilescreen...");
-
                 if (!this.contentType) {
                     this.errorMessage = "You need to specify what you have to offer.";
                     return;
@@ -217,7 +215,6 @@
                     return this.user != undefined;
                 },
                 offerCreated() {
-                    console.log("Inside 'offerCreated' computed method of vue app...");
                     return this.offer != undefined;
                 }
             },
@@ -237,12 +234,11 @@
                     this.user = user;
                 },
                 async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, user_id) {
-                    console.log("Inside 'createOffer' method of vue app...");
-                    const response = await fetch('profilepage/offer', {
+                    const response = await fetch('profilepage/handler', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/x-www-form-urlencoded'
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, user_id: user_id})
                     });

@@ -5,7 +5,9 @@ import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -77,8 +79,9 @@ public class Offer{
         return this.expiryDate;
     }
 
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setExpiryDate(String expiryDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+        this.expiryDate = LocalDate.parse(expiryDate, formatter);
     }
 
     public boolean isAvailable() {

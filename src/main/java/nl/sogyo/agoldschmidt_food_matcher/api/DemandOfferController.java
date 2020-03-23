@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,48 +41,60 @@ public class DemandOfferController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="/offer", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public @ResponseBody Offer addNewOffer(MultiValueMap<Object, Object> formParams) {
-        // offer.setAvailable(true);
-        // if (addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()) == null) {
-        //     addressDao.save(offer.getAddress());
-        // } else {
-        //     offer.setAddress(addressDao.findByLatitudeAndLongitude(offer.getAddress().getLatitude(), offer.getAddress().getLongitude()));
-        // }
-        // ArrayList<User> userList = new ArrayList<>();
-        // userDao.findById(offer.getUser().getUser_id()).ifPresent(userList::add);
-        // User user = userList.get(0);
-        // offer.setUser(user);
-        // offerDao.save(offer);
-        return null;
-        // Offer offer = new Offer();
-        // offer.setContentType(contentType);
-        // offer.setContentQuantity(Integer.valueOf(contentQuantity));
-        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
-        // LocalDate expiryDate = LocalDate.parse(expiryDateString, formatter);
-        // offer.setExpiryDate(expiryDate);
-        // offer.setAvailable(true);
-        // if (addressDao.findByLatitudeAndLongitude(Double.valueOf(latitude), Double.valueOf(longitude)) == null) {
-        //     Address address = new Address();
-        //     address.setStreetName(streetName);
-        //     address.setHouseNumber(houseNumber);
-        //     address.setPostCode(postCode);
-        //     address.setCity(city);
-        //     address.setCountry(country);
-        //     address.setLongitude(Double.valueOf(longitude));
-        //     address.setLatitude(Double.valueOf(latitude));
-        //     addressDao.save(address);
-        //     offer.setAddress(address);
-        // } else {
-        //     Address address = addressDao.findByLatitudeAndLongitude(Double.valueOf(latitude), Double.valueOf(longitude));
-        //     offer.setAddress(address);
-        // }
-        // ArrayList<User> userList = new ArrayList<>();
-        // userDao.findById(user_id).ifPresent(userList::add);
-        // User user = userList.get(0);
-        // offer.setUser(user);
-        // offerDao.save(offer);
-        // return offer;
+    @PostMapping(path="/handler")
+    public @ResponseBody Offer offerHandler(
+        @RequestBody String contentType,
+        @RequestBody Integer contentQuantity,
+        @RequestBody String expiryDate,
+        @RequestBody String streetName,
+        @RequestBody String houseNumber,
+        @RequestBody String postCode,
+        @RequestBody String city,
+        @RequestBody String country,
+        @RequestBody Double latitude,
+        @RequestBody Double longitude,
+        @RequestBody Integer user_id
+    ) {
+        Address address = createAddress(streetName, houseNumber, postCode, city, country, latitude, longitude);
+        User user = findUser(user_id);
+        Offer offer = createOffer(contentType, contentQuantity, expiryDate, address, user);
+        return offer;
+    }
+
+    public Address createAddress(String streetName, String houseNumber, String postCode, String city, String country, Double latitude, Double longitude) {
+        Address address;
+        if (addressDao.findByLatitudeAndLongitude(latitude, longitude) == null) {
+            address = new Address();
+            address.setStreetName(streetName);
+            address.setHouseNumber(houseNumber);
+            address.setPostCode(postCode);
+            address.setCity(city);
+            address.setCountry(country);
+            address.setLatitude(latitude);
+            address.setLongitude(longitude);
+        } else {
+            address = addressDao.findByLatitudeAndLongitude(latitude, longitude);
+        }
+        return address;
+    }
+
+    public User findUser(Integer user_id) {
+        ArrayList<User> userList = new ArrayList<>();
+        userDao.findById(user_id).ifPresent(userList::add);
+        User user = userList.get(0);
+        return user;
+    }
+
+    public Offer createOffer(String contentType, Integer contentQuantity, String expiryDate, Address address, User user) {
+        Offer offer = new Offer();
+        offer.setContentType(contentType);
+        offer.setContentQuantity(contentQuantity);
+        offer.setExpiryDate(expiryDate);
+        offer.setAvailable(true);
+        offer.setAddress(address);
+        offer.setUser(user);
+        offerDao.save(offer);
+        return offer;
     }
 
     @PostMapping(path="/demand")
