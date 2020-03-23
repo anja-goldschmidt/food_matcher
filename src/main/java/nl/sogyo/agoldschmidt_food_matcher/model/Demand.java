@@ -38,7 +38,7 @@ public class Demand {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userid")
     private User user;
 
     @NonNull

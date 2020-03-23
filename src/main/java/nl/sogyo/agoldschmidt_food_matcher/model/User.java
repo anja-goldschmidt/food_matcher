@@ -13,7 +13,7 @@ import javax.persistence.Id;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer user_id;
+    private Integer userid;
 
     private String name;
 
@@ -23,8 +23,8 @@ public class User {
     @NonNull
     private String password;
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserid() {
+        return userid;
     }
 
     public String getName() {
@@ -39,8 +39,8 @@ public class User {
         return password;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserid(Integer userid) {
+        this.userid = userid;
     }
 
     public void setName(String name) {

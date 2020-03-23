@@ -3,6 +3,8 @@ package nl.sogyo.agoldschmidt_food_matcher.api;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
 import nl.sogyo.agoldschmidt_food_matcher.model.Address;
+import nl.sogyo.agoldschmidt_food_matcher.model.ClientOfferData;
 import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
 import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
 import nl.sogyo.agoldschmidt_food_matcher.model.User;
@@ -41,27 +44,30 @@ public class DemandOfferController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="/handler")
-    public @ResponseBody Offer offerHandler(
-        @RequestBody String contentType,
-        @RequestBody Integer contentQuantity,
-        @RequestBody String expiryDate,
-        @RequestBody String streetName,
-        @RequestBody String houseNumber,
-        @RequestBody String postCode,
-        @RequestBody String city,
-        @RequestBody String country,
-        @RequestBody Double latitude,
-        @RequestBody Double longitude,
-        @RequestBody Integer user_id
-    ) {
-        Address address = createAddress(streetName, houseNumber, postCode, city, country, latitude, longitude);
-        User user = findUser(user_id);
-        Offer offer = createOffer(contentType, contentQuantity, expiryDate, address, user);
+    @PostMapping(path="/offerhandler")
+    public @ResponseBody Offer offerHandler(@RequestBody ClientOfferData clientOfferData) {
+        Address address = createAddress(clientOfferData.getStreetName(), 
+                                        clientOfferData.getHouseNumber(), 
+                                        clientOfferData.getPostCode(),
+                                        clientOfferData.getCity(), 
+                                        clientOfferData.getCountry(), 
+                                        clientOfferData.getLatitude(), 
+                                        clientOfferData.getLongitude());
+        User user = findUser(clientOfferData.getUserid());
+        Offer offer = createOffer(clientOfferData.getContentType(), 
+                    clientOfferData.getContentQuantity(), 
+                    clientOfferData.getExpiryDate(), 
+                    address, 
+                    user);
+        Offer[] offerArray = getAllOffersByUser(clientOfferData.getUserid());
+        System.out.println("The offer array as it will be send to the client (from inside the offerHandler()): ");
+        for (int i = 0; i < offerArray.length; i++) {
+            System.out.print(offerArray[i] + " ");
+        }
         return offer;
     }
 
-    public Address createAddress(String streetName, String houseNumber, String postCode, String city, String country, Double latitude, Double longitude) {
+    private Address createAddress(String streetName, String houseNumber, String postCode, String city, String country, Double latitude, Double longitude) {
         Address address;
         if (addressDao.findByLatitudeAndLongitude(latitude, longitude) == null) {
             address = new Address();
@@ -72,20 +78,21 @@ public class DemandOfferController {
             address.setCountry(country);
             address.setLatitude(latitude);
             address.setLongitude(longitude);
+            addressDao.save(address);
         } else {
             address = addressDao.findByLatitudeAndLongitude(latitude, longitude);
         }
         return address;
     }
 
-    public User findUser(Integer user_id) {
+    private User findUser(Integer userid) {
         ArrayList<User> userList = new ArrayList<>();
-        userDao.findById(user_id).ifPresent(userList::add);
+        userDao.findById(userid).ifPresent(userList::add);
         User user = userList.get(0);
         return user;
     }
 
-    public Offer createOffer(String contentType, Integer contentQuantity, String expiryDate, Address address, User user) {
+    private Offer createOffer(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, User user) {
         Offer offer = new Offer();
         offer.setContentType(contentType);
         offer.setContentQuantity(contentQuantity);
@@ -97,19 +104,17 @@ public class DemandOfferController {
         return offer;
     }
 
-    @PostMapping(path="/demand")
+    private Offer[] getAllOffersByUser(Integer userid) {
+        ArrayList<Offer> offerList = (ArrayList<Offer>) offerDao.findByUserUserid(userid);
+        System.out.println("The offer list from the database (via private function getAlOffersByUser()): ");
+        System.out.println(offerList);
+        Offer[] offerArray = (Offer[]) offerList.toArray();
+        return offerArray;
+    }
+
+    @PostMapping(path="/demandhandler")
     public @ResponseBody Demand addNewDemand(@RequestBody Demand demand) {
         return null;
-    }
-
-    @GetMapping(path="/adminDemand")
-    public @ResponseBody Iterable<Demand> getAllDemands() {
-        return demandDao.findAll();
-    }
-
-    @GetMapping(path="/adminOffer")
-    public @ResponseBody Iterable<Offer> getAllOffers() {
-        return offerDao.findAll();
     }
 
 }

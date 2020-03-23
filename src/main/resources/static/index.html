@@ -80,7 +80,7 @@
                             <tr>
                                 <td>personal information: </td>
                                 <td>
-                                    Your user id: {{user.user_id}}
+                                    Your user id: {{user.userid}}
                                     <br />
                                     Your name: {{user.name}}
                                     <br />
@@ -94,6 +94,13 @@
                                 <td>offers: </td>
                                 <td>
                                     Your offers:
+                                    <br />
+                                    <div v-if="offerCreated">Content type: {{offer.contentType}}</div>
+                                    <br />
+                                    <div v-if="offerCreated">Content quantity: {{offer.contentQuantity}}</div>
+                                    <br />
+                                    <div v-if="offerCreated">Expiry date: {{offer.expiryDate}}</div>
+                                    <br />
                                 </td>
                                 <td>
                                     <input
@@ -197,7 +204,7 @@
 
                 this.errorMessage = "";
 
-                this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.user.user_id);
+                this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.user.userid);
             }
             }
         });
@@ -233,14 +240,14 @@
 
                     this.user = user;
                 },
-                async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, user_id) {
-                    const response = await fetch('profilepage/handler', {
+                async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, userid) {
+                    const response = await fetch('profilepage/offerhandler', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, user_id: user_id})
+                        body: JSON.stringify({ contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, userid: userid})
                     });
                     const offer = await response.json();
 

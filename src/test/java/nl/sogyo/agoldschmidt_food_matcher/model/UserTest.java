@@ -26,9 +26,9 @@ public class UserTest {
 
     @Test
     public void testUser_id() {
-        user.setUser_id(1);
-        assertNotNull(user.getUser_id());
-        assertTrue(user.getUser_id() instanceof Integer);
+        user.setUserid(1);
+        assertNotNull(user.getUserid());
+        assertTrue(user.getUserid() instanceof Integer);
     }
 
     @Test

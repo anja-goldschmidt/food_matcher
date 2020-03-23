@@ -56,15 +56,15 @@ public class AddressTest {
     }
 
     @Test
-    public void testLongitude() {
-        address.setLongitude(5.171251);
-        assertEquals(5.171251, address.getLongitude());
-    }
-    
-    @Test
     public void testLatitude() {
         address.setLatitude(52.101791);
         assertEquals(52.101791, address.getLatitude());
+    }
+
+    @Test
+    public void testLongitude() {
+        address.setLongitude(5.171251);
+        assertEquals(5.171251, address.getLongitude());
     }
 
 }
