@@ -85,8 +85,8 @@ public class DemandTest {
     }
 
     @Test
-    public void testRange() {
-        demand.setRange(250);
-        assertEquals(250, demand.getRange());
+    public void testDistance() {
+        demand.setDistance(250);
+        assertEquals(250, demand.getDistance());
     }
 }

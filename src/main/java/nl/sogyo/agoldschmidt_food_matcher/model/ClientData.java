@@ -1,12 +1,12 @@
 package nl.sogyo.agoldschmidt_food_matcher.model;
 
-public class UserData {
+public class ClientData {
 
     private User user;
 
     private Offer[] offerArray;
 
-    // private Demand[] demandArray;
+    private Demand[] demandArray;
 
     public User getUser() {
         return this.user;
@@ -24,12 +24,12 @@ public class UserData {
         this.offerArray = offerArray;
     }
 
-    // public Demand[] getDemandArray() {
-    //     return this.demandArray;
-    // }
+    public Demand[] getDemandArray() {
+        return this.demandArray;
+    }
 
-    // public void setDemandArray(Demand[] demandArray) {
-    //     this.demandArray = demandArray;
-    // }
+    public void setDemandArray(Demand[] demandArray) {
+        this.demandArray = demandArray;
+    }
 
 }

@@ -1,6 +1,8 @@
 package nl.sogyo.agoldschmidt_food_matcher.model;
 
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
@@ -15,7 +17,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Table(appliesTo = "demand")
-public class Demand {
+public class Demand{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer demand_id;
@@ -27,19 +29,15 @@ public class Demand {
     private Integer contentQuantity;
 
     @NonNull
-    private boolean available;
+    @DateTimeFormat(pattern = "dd MM yyyy")
+    private LocalDate expiryDate;
+
+    @Type(type="true_false")
+    private Boolean available;
 
     @OneToOne
     @JoinColumn(name = "offer_id")
     private Offer offer;
-
-    @NonNull
-    private LocalDate expiryDate;
-
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "userid")
-    private User user;
 
     @NonNull
     @ManyToOne
@@ -47,7 +45,12 @@ public class Demand {
     private Address address;
 
     @NonNull
-    private Integer range;
+    private Integer distance;
+
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    private User user;
 
     public Integer getDemand_id() {
         return this.demand_id;
@@ -73,6 +76,14 @@ public class Demand {
         this.contentQuantity = contentQuantity;
     }
 
+    public LocalDate getExpiryDate() {
+        return this.expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
     public boolean isAvailable() {
         return this.available;
     }
@@ -93,12 +104,20 @@ public class Demand {
         }
     }
 
-    public LocalDate getExpiryDate() {
-        return this.expiryDate;
+    public Address getAddress() {
+        return this.address;
     }
 
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Integer getDistance() {
+        return this.distance;
+    }
+
+    public void setDistance(Integer distance) {
+        this.distance = distance;
     }
 
     public User getUser() {
@@ -109,19 +128,4 @@ public class Demand {
         this.user = user;
     }
 
-    public Address getAddress() {
-        return this.address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Integer getRange() {
-        return this.range;
-    }
-
-    public void setRange(Integer range) {
-        this.range = range;
-    }
 }

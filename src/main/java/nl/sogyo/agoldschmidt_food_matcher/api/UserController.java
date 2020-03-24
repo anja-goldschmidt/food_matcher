@@ -1,11 +1,12 @@
 package nl.sogyo.agoldschmidt_food_matcher.api;
 
+import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
 import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
 import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
 import nl.sogyo.agoldschmidt_food_matcher.model.User;
-import nl.sogyo.agoldschmidt_food_matcher.model.UserData;
+import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
 
 import java.util.ArrayList;
 
@@ -19,19 +20,22 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @Autowired OfferDao offerDao;
+    @Autowired 
+    private OfferDao offerDao;
 
-    // private DemandOfferController demandOfferController;
+    @Autowired
+    private DemandDao demandDao;
 
     @PostMapping(path="login")
-    public @ResponseBody UserData userHandler (@RequestBody User user) {
+    public @ResponseBody ClientData userHandler (@RequestBody User user) {
         user = addNewUser(user);
         Offer[] offerArray = getAllOffersByUser(user.getUserid());
-        UserData userData = new UserData();
-        userData.setUser(user);
-        userData.setOfferArray(offerArray);
-        // userData.setDemandArray(demandArray);
-        return userData;
+        Demand[] demandArray = getAllDemandsByUser(user.getUserid());
+        ClientData clientData = new ClientData();
+        clientData.setUser(user);
+        clientData.setOfferArray(offerArray);
+        clientData.setDemandArray(demandArray);
+        return clientData;
     }
 
     private User addNewUser(User user) {
@@ -48,6 +52,11 @@ public class UserController {
     private Offer[] getAllOffersByUser(Integer userid) {
         Offer[] offerArray = offerDao.findByUserUserid(userid);
         return offerArray;
+    }
+
+    private Demand[] getAllDemandsByUser(Integer userid) {
+        Demand[] demandArray = demandDao.findByUserUserid(userid);
+        return demandArray;
     }
 
     @GetMapping(path="/adminUser")

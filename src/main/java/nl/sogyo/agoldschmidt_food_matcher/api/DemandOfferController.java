@@ -15,6 +15,8 @@ import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
 import nl.sogyo.agoldschmidt_food_matcher.model.Address;
+import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
+import nl.sogyo.agoldschmidt_food_matcher.model.ClientDemandData;
 import nl.sogyo.agoldschmidt_food_matcher.model.ClientOfferData;
 import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
 import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
@@ -36,7 +38,7 @@ public class DemandOfferController {
     private UserDao userDao;
 
     @PostMapping(path="/offerhandler")
-    public @ResponseBody Offer[] offerHandler(@RequestBody ClientOfferData clientOfferData) {
+    public @ResponseBody ClientData offerHandler(@RequestBody ClientOfferData clientOfferData) {
         Address address = createAddress(clientOfferData.getStreetName(), 
                                         clientOfferData.getHouseNumber(), 
                                         clientOfferData.getPostCode(),
@@ -51,7 +53,37 @@ public class DemandOfferController {
                     address, 
                     user);
         Offer[] offerArray = getAllOffersByUser(clientOfferData.getUserid());
-        return offerArray;
+        Demand[] demandArray = getAllDemandsByUser(clientOfferData.getUserid());
+        ClientData clientData = new ClientData();
+        clientData.setUser(user);
+        clientData.setOfferArray(offerArray);
+        clientData.setDemandArray(demandArray);
+        return clientData;
+    }
+
+    @PostMapping(path="/demandhandler")
+    public @ResponseBody ClientData addNewDemand(@RequestBody ClientDemandData clientDemandData) {
+        Address address = createAddress(clientDemandData.getStreetName(),
+                        clientDemandData.getHouseNumber(),
+                        clientDemandData.getPostCode(),
+                        clientDemandData.getCity(),
+                        clientDemandData.getCountry(),
+                        clientDemandData.getLatitude(),
+                        clientDemandData.getLongitude());
+        User user = findUser(clientDemandData.getUserid());
+        createDemand(clientDemandData.getContentType(),
+                    clientDemandData.getContentQuantity(),
+                    clientDemandData.getExpiryDate(),
+                    address,
+                    clientDemandData.getDistance(),
+                    user);
+        Offer[] offerArray = getAllOffersByUser(clientDemandData.getUserid());
+        Demand[] demandArray = getAllDemandsByUser(clientDemandData.getUserid());
+        ClientData clientData = new ClientData();
+        clientData.setUser(user);
+        clientData.setOfferArray(offerArray);
+        clientData.setDemandArray(demandArray);
+        return clientData;
     }
 
     private Address createAddress(String streetName, String houseNumber, String postCode, String city, String country, Double latitude, Double longitude) {
@@ -79,7 +111,7 @@ public class DemandOfferController {
         return user;
     }
 
-    private Offer createOffer(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, User user) {
+    private void createOffer(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, User user) {
         Offer offer = new Offer();
         offer.setContentType(contentType);
         offer.setContentQuantity(contentQuantity);
@@ -88,17 +120,28 @@ public class DemandOfferController {
         offer.setAddress(address);
         offer.setUser(user);
         offerDao.save(offer);
-        return offer;
     }
 
-    protected Offer[] getAllOffersByUser(Integer userid) {
+    private Offer[] getAllOffersByUser(Integer userid) {
         Offer[] offerArray = offerDao.findByUserUserid(userid);
         return offerArray;
     }
 
-    @PostMapping(path="/demandhandler")
-    public @ResponseBody Demand addNewDemand(@RequestBody Demand demand) {
-        return null;
+    private void createDemand(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, Integer distance, User user) {
+        Demand demand = new Demand();
+        demand.setContentType(contentType);
+        demand.setContentQuantity(contentQuantity);
+        demand.setExpiryDate(expiryDate);
+        demand.setAvailable(true);
+        demand.setAddress(address);
+        demand.setDistance(distance);
+        demand.setUser(user);
+        demandDao.save(demand);
+    }
+
+    private Demand[] getAllDemandsByUser(Integer userid) {
+        Demand[] demandArray = demandDao.findByUserUserid(userid);
+        return demandArray;
     }
 
 }

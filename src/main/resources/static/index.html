@@ -18,9 +18,8 @@
         <profile-screen
             v-else
             v-bind:user-data="userData"
-            // v-bind:user="user"
-            // v-bind:offers="offers"
-            v-on:offer-created="createOffer">
+            v-on:offer-created="createOffer"
+            v-on:demand-created="createDemand">
         </profile-screen>
     </div>
 
@@ -103,8 +102,13 @@
                                         <br />
                                         Expiry date: {{offer.expiryDate}}
                                         <br />
+                                        Address:
+                                        <br />
+                                        {{offer.address.streetName}}, {{offer.address.houseNumber}}
+                                        <br />
+                                        {{offer.address.postCode}}, {{offer.address.city}}
                                         ______
-                                    <div/>
+                                    </div>
                                 </td>
                                 <td>
                                     <input
@@ -146,70 +150,189 @@
                             </tr>
                             <tr>
                                 <td>demands: </td>
-                                <td>demand_data</td>
-                                <td>create demand</td>
+                                <td>
+                                    Your demands:
+                                    <br />
+                                    <div v-for="demand in userData.demandArray">
+                                        Content type: {{demand.contentType}}
+                                        <br />
+                                        Content quantity: {{demand.contentQuantity}}
+                                        <br />
+                                        Expiry date: {{demand.expiryDate}}
+                                        <br />
+                                        Address:
+                                        <br />
+                                        {{demand.address.streetName}}, {{demand.address.houseNumber}}
+                                        <br />
+                                        {{demand.address.postCode}}, {{demand.address.city}}
+                                        <br />
+                                        Look within ditance of {{demand.distance}} meters.
+                                        <br />
+                                        ______
+                                    </div>    
+                                </td>
+                                <td>
+                                    <input
+                                        placeholder="contentType"
+                                        v-model="contentType"/>
+                                    <input
+                                        placeholder="contentQuantity"
+                                        v-model="contentQuantity"/>
+                                    <input 
+                                        type="date"
+                                        placeholder="expiryDate: dd mm yyyy"
+                                        v-model="expiryDate"/>
+                                    <input
+                                        placeholder="streetName"
+                                        v-model="streetName"/>
+                                    <input
+                                        placeholder="houseNumber"
+                                        v-model="houseNumber"/>
+                                    <input
+                                        placeholder="postCode"
+                                        v-model="postCode"/>
+                                    <input
+                                        placeholder="city"
+                                        v-model="city"/>
+                                    <input
+                                        placeholder="country"
+                                        v-model="country"/>
+                                    <input
+                                        placeholder="latitude"
+                                        v-model="latitude"/>
+                                    <input
+                                        placeholder="longitude"
+                                        v-model="longitude"/>
+                                    <input
+                                        placeholder="distance in meters"
+                                        v-model="distance"/>
+                                    
+                                    {{ errorMessage }}
+
+                                    <button v-on:click="createDemand">create demand</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             `,
             methods: {
-            createOffer() {
+                createOffer() {
 
-                if (!this.contentType) {
-                    this.errorMessage = "You need to specify what you have to offer.";
-                    return;
+                    if (!this.contentType) {
+                        this.errorMessage = "You need to specify what you have to offer.";
+                        return;
+                    }
+
+                    if (!this.contentQuantity) {
+                        this.errorMessage = "You need to specify how much you have to offer.";
+                        return;
+                    }
+
+                    if (!this.expiryDate) {
+                        this.errorMessage = "You need to specify how long your offer is available. Please use the format: dd mm yyyy (e.g. 06 01 2020).";
+                        return;
+                    }
+
+                    if (!this.streetName) {
+                        this.errorMessage = "You need to specify the street where people can pick up your offer.";
+                        return;
+                    }
+
+                    if (!this.houseNumber) {
+                        this.errorMessage = "You need to specify the house number where people can pick up your offer.";
+                        return;
+                    }
+
+                    if (!this.postCode) {
+                        this.errorMessage = "You need to specify the post code where people can pick up your offer.";
+                        return;
+                    }
+
+                    if (!this.city) {
+                        this.errorMessage = "You need to specify the city where people can pick up your offer.";
+                        return;
+                    }
+
+                    if (!this.country) {
+                        this.errorMessage = "You need to specify the country where people can pick up your offer.";
+                        return;
+                    }
+
+                    if (!this.latitude) {
+                        this.errorMessage = "You need to specify the latitude where people can pick up your offer.";
+                        return;
+                    }
+
+                    if (!this.longitude) {
+                        this.errorMessage = "You need to specify the longitude where people can pick up your offer.";
+                        return;
+                    }
+
+                    this.errorMessage = "";
+
+                    this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.userData.user.userid);
+                },
+                createDemand() {
+
+                    if (!this.contentType) {
+                        this.errorMessage = "You need to specify what you need.";
+                        return;
+                    }
+
+                    if (!this.contentQuantity) {
+                        this.errorMessage = "You need to specify how much you need.";
+                        return;
+                    }
+
+                    if (!this.expiryDate) {
+                        this.errorMessage = "You need to specify how long you are looking for your demand. Please use the format: dd mm yyyy (e.g. 06 01 2020).";
+                        return;
+                    }
+
+                    if (!this.streetName) {
+                        this.errorMessage = "You need to specify the street where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.houseNumber) {
+                        this.errorMessage = "You need to specify the house number where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.postCode) {
+                        this.errorMessage = "You need to specify the post code where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.city) {
+                        this.errorMessage = "You need to specify the city where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.country) {
+                        this.errorMessage = "You need to specify the country where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.latitude) {
+                        this.errorMessage = "You need to specify the latitude where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.longitude) {
+                        this.errorMessage = "You need to specify the longitude where you need your demand.";
+                        return;
+                    }
+
+                    if (!this.distance) {
+                        this.errorMessage = "You need to specify the distance you want to cover for your demand. Please specify the distance in meters."
+                    }
+
+                    this.errorMessage = "";
+
+                    this.$emit('demand-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.distance, this.userData.user.userid);
                 }
-
-                if (!this.contentQuantity) {
-                    this.errorMessage = "You need to specify how much you have to offer.";
-                    return;
-                }
-
-                if (!this.expiryDate) {
-                    this.errorMessage = "You need to specify how long your offer is available. Please use the format: dd mm yyyy (e.g. 06 01 2020).";
-                    return;
-                }
-
-                if (!this.streetName) {
-                    this.errorMessage = "You need to specify the street where people can pick up your offer.";
-                    return;
-                }
-
-                if (!this.houseNumber) {
-                    this.errorMessage = "You need to specify the house number where people can pick up your offer.";
-                    return;
-                }
-
-                if (!this.postCode) {
-                    this.errorMessage = "You need to specify the post code where people can pick up your offer.";
-                    return;
-                }
-
-                if (!this.city) {
-                    this.errorMessage = "You need to specify the city where people can pick up your offer.";
-                    return;
-                }
-
-                if (!this.country) {
-                    this.errorMessage = "You need to specify the country where people can pick up your offer.";
-                    return;
-                }
-
-                if (!this.latitude) {
-                    this.errorMessage = "You need to specify the latitude where people can pick up your offer.";
-                    return;
-                }
-
-                if (!this.longitude) {
-                    this.errorMessage = "You need to specify the longitude where people can pick up your offer.";
-                    return;
-                }
-
-                this.errorMessage = "";
-
-                this.$emit('offer-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.user.userid);
-            }
             }
         });
 
@@ -218,16 +341,12 @@
 
             data: {
                 userData: undefined,
-                offers: undefined
             },
 
             computed: {
                 userLoggedIn() {
                     return this.userData != undefined;
                 },
-                offerCreated() {
-                    return this.offers != undefined;
-                }
 
             },
 
@@ -246,9 +365,9 @@
                     this.userData = userData;
 
                     this.user = userData[0];
-                    console.log("These are the userData: ");
-                    console.log(userData);
+
                 },
+
                 async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, userid) {
                     const response = await fetch('profilepage/offerhandler', {
                         method: 'POST',
@@ -258,9 +377,23 @@
                         },
                         body: JSON.stringify({ contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, userid: userid})
                     });
-                    const offers = await response.json();
+                    const userData = await response.json();
 
-                    this.offers = offers;
+                    this.userData = userData;
+                },
+
+                async createDemand(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, distance, userid) {
+                    const response = await fetch('profilepage/demandhandler', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, distance: distance, userid: userid})
+                    });
+                    const userData = await response.json();
+
+                    this.userData = userData;
                 }
             }
         });
