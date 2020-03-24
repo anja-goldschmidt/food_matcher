@@ -1,7 +1,11 @@
 package nl.sogyo.agoldschmidt_food_matcher.api;
 
+import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
+import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
+import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
 import nl.sogyo.agoldschmidt_food_matcher.model.User;
+import nl.sogyo.agoldschmidt_food_matcher.model.UserData;
 
 import java.util.ArrayList;
 
@@ -15,16 +19,35 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired OfferDao offerDao;
+
+    // private DemandOfferController demandOfferController;
+
     @PostMapping(path="login")
-    public @ResponseBody User addNewUser (@RequestBody User user) {
-        if (userDao.findByEmail(user.getEmail()) == null) {
+    public @ResponseBody UserData userHandler (@RequestBody User user) {
+        user = addNewUser(user);
+        Offer[] offerArray = getAllOffersByUser(user.getUserid());
+        UserData userData = new UserData();
+        userData.setUser(user);
+        userData.setOfferArray(offerArray);
+        // userData.setDemandArray(demandArray);
+        return userData;
+    }
+
+    private User addNewUser(User user) {
+        if (userDao.findByEmailIgnoreCase(user.getEmail()) == null) {
             userDao.save(user);
             return user;
-        } else if (userDao.findByEmail(user.getEmail()) != null && userDao.findByEmail(user.getEmail()).getPassword().equals(user.getPassword())) {
-            return userDao.findByEmail(user.getEmail());
+        } else if (userDao.findByEmailIgnoreCase(user.getEmail()) != null && userDao.findByEmailIgnoreCase(user.getEmail()).getPassword().equals(user.getPassword())) {
+            return userDao.findByEmailIgnoreCase(user.getEmail());
         } else {
             return null;
         }
+    }
+
+    private Offer[] getAllOffersByUser(Integer userid) {
+        Offer[] offerArray = offerDao.findByUserUserid(userid);
+        return offerArray;
     }
 
     @GetMapping(path="/adminUser")

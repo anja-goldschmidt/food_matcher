@@ -17,8 +17,9 @@
 
         <profile-screen
             v-else
-            v-bind:user="user"
-            v-bind:offer="offer"
+            v-bind:user-data="userData"
+            // v-bind:user="user"
+            // v-bind:offers="offers"
             v-on:offer-created="createOffer">
         </profile-screen>
     </div>
@@ -72,7 +73,7 @@
         });
 
         Vue.component('profile-screen', {
-            props: [ 'user' , 'offer'],
+            props: [ 'userData'],
             template: `
                 <div>
                     <table style="width: 100%;" border="1">
@@ -80,13 +81,13 @@
                             <tr>
                                 <td>personal information: </td>
                                 <td>
-                                    Your user id: {{user.userid}}
+                                    Your user id: {{userData.user.userid}}
                                     <br />
-                                    Your name: {{user.name}}
+                                    Your name: {{userData.user.name}}
                                     <br />
-                                    Your email-address: {{user.email}}
+                                    Your email-address: {{userData.user.email}}
                                     <br />
-                                    Your password: {{user.password}}
+                                    Your password: {{userData.user.password}}
                                 </td>
                                 <td></td>
                             </tr>
@@ -95,12 +96,15 @@
                                 <td>
                                     Your offers:
                                     <br />
-                                    <div v-if="offerCreated">Content type: {{offer.contentType}}</div>
-                                    <br />
-                                    <div v-if="offerCreated">Content quantity: {{offer.contentQuantity}}</div>
-                                    <br />
-                                    <div v-if="offerCreated">Expiry date: {{offer.expiryDate}}</div>
-                                    <br />
+                                    <div v-for="offer in userData.offerArray">
+                                        Content type: {{offer.contentType}}
+                                        <br />
+                                        Content quantity: {{offer.contentQuantity}}
+                                        <br />
+                                        Expiry date: {{offer.expiryDate}}
+                                        <br />
+                                        ______
+                                    <div/>
                                 </td>
                                 <td>
                                     <input
@@ -213,17 +217,18 @@
             el: '#app',
 
             data: {
-                user: undefined,
-                offer: undefined
+                userData: undefined,
+                offers: undefined
             },
 
             computed: {
                 userLoggedIn() {
-                    return this.user != undefined;
+                    return this.userData != undefined;
                 },
                 offerCreated() {
-                    return this.offer != undefined;
+                    return this.offers != undefined;
                 }
+
             },
 
             methods: {
@@ -236,9 +241,13 @@
                         },
                         body: JSON.stringify({ name: name, email: email, password: password })
                     });
-                    const user = await response.json();
+                    const userData = await response.json();
 
-                    this.user = user;
+                    this.userData = userData;
+
+                    this.user = userData[0];
+                    console.log("These are the userData: ");
+                    console.log(userData);
                 },
                 async createOffer(contentType, contentQuantity, expiryDate, streetName, houseNumber, postCode, city, country, latitude, longitude, userid) {
                     const response = await fetch('profilepage/offerhandler', {
@@ -249,9 +258,9 @@
                         },
                         body: JSON.stringify({ contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, userid: userid})
                     });
-                    const offer = await response.json();
+                    const offers = await response.json();
 
-                    this.offer = offer;
+                    this.offers = offers;
                 }
             }
         });
