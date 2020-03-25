@@ -8,6 +8,7 @@ import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
 import nl.sogyo.agoldschmidt_food_matcher.model.User;
 import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class UserController {
 
     @PostMapping(path="login")
     public @ResponseBody ClientData userHandler (@RequestBody User user) {
+        updateDatabaseExpiredOfferDemand();
         user = addNewUser(user);
         Offer[] offerArray = getAllOffersByUser(user.getUserid());
         Demand[] demandArray = getAllDemandsByUser(user.getUserid());
@@ -36,6 +38,20 @@ public class UserController {
         clientData.setOfferArray(offerArray);
         clientData.setDemandArray(demandArray);
         return clientData;
+    }
+
+    private void updateDatabaseExpiredOfferDemand() {
+        LocalDate today = LocalDate.now();
+        Offer[] expiredOffers = offerDao.findByAvailableAndExpiryDateLessThan(true, today);
+        for (int i = 0; i < expiredOffers.length; i++) {
+            expiredOffers[i].setAvailable(false);
+            offerDao.save(expiredOffers[i]);
+        }
+        Demand[] expiredDemands = demandDao.findByAvailableAndExpiryDateLessThan(true, today);
+        for (int i = 0; i < expiredDemands.length; i++) {
+            expiredDemands[i].setAvailable(false);
+            demandDao.save(expiredDemands[i]);
+        }
     }
 
     private User addNewUser(User user) {
@@ -50,12 +66,12 @@ public class UserController {
     }
 
     private Offer[] getAllOffersByUser(Integer userid) {
-        Offer[] offerArray = offerDao.findByUserUserid(userid);
+        Offer[] offerArray = offerDao.findByAvailableAndUserUserid(true, userid);
         return offerArray;
     }
 
     private Demand[] getAllDemandsByUser(Integer userid) {
-        Demand[] demandArray = demandDao.findByUserUserid(userid);
+        Demand[] demandArray = demandDao.findByAvailableAndUserUserid(true, userid);
         return demandArray;
     }
 

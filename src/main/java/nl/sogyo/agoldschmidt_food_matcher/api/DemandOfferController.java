@@ -47,11 +47,12 @@ public class DemandOfferController {
                                         clientOfferData.getLatitude(), 
                                         clientOfferData.getLongitude());
         User user = findUser(clientOfferData.getUserid());
-        createOffer(clientOfferData.getContentType(), 
-                    clientOfferData.getContentQuantity(), 
-                    clientOfferData.getExpiryDate(), 
-                    address, 
-                    user);
+        Offer offer = createOffer(clientOfferData.getContentType(), 
+                                clientOfferData.getContentQuantity(), 
+                                clientOfferData.getExpiryDate(), 
+                                address, 
+                                user);
+        updateDatabaseExpiredOfferDemand();
         Offer[] offerArray = getAllOffersByUser(clientOfferData.getUserid());
         Demand[] demandArray = getAllDemandsByUser(clientOfferData.getUserid());
         ClientData clientData = new ClientData();
@@ -71,12 +72,19 @@ public class DemandOfferController {
                         clientDemandData.getLatitude(),
                         clientDemandData.getLongitude());
         User user = findUser(clientDemandData.getUserid());
-        createDemand(clientDemandData.getContentType(),
-                    clientDemandData.getContentQuantity(),
-                    clientDemandData.getExpiryDate(),
-                    address,
-                    clientDemandData.getDistance(),
-                    user);
+        Demand demand = createDemand(clientDemandData.getContentType(),
+                                    clientDemandData.getContentQuantity(),
+                                    clientDemandData.getExpiryDate(),
+                                    address,
+                                    clientDemandData.getDistance(),
+                                    user);
+        updateDatabaseExpiredOfferDemand();
+        Offer[] offerMatchesContentTypeQuantity = offerDao.findByAvailableAndContentTypeAndContentQuantityGreaterThanEqual(true, demand.getContentType(), demand.getContentQuantity());
+        System.out.println("This is how many matching offers where found: " + offerMatchesContentTypeQuantity.length);
+        // Offer[] offerMatchesContentTypeQuantityDate;
+        // for (int i = 0; i < offerMatchesContentTypeQuantity.length; i++) {
+
+        // }
         Offer[] offerArray = getAllOffersByUser(clientDemandData.getUserid());
         Demand[] demandArray = getAllDemandsByUser(clientDemandData.getUserid());
         ClientData clientData = new ClientData();
@@ -84,6 +92,20 @@ public class DemandOfferController {
         clientData.setOfferArray(offerArray);
         clientData.setDemandArray(demandArray);
         return clientData;
+    }
+
+    private void updateDatabaseExpiredOfferDemand() {
+        LocalDate today = LocalDate.now();
+        Offer[] expiredOffers = offerDao.findByAvailableAndExpiryDateLessThan(true, today);
+        for (int i = 0; i < expiredOffers.length; i++) {
+            expiredOffers[i].setAvailable(false);
+            offerDao.save(expiredOffers[i]);
+        }
+        Demand[] expiredDemands = demandDao.findByAvailableAndExpiryDateLessThan(true, today);
+        for (int i = 0; i < expiredDemands.length; i++) {
+            expiredDemands[i].setAvailable(false);
+            demandDao.save(expiredDemands[i]);
+        }
     }
 
     private Address createAddress(String streetName, String houseNumber, String postCode, String city, String country, Double latitude, Double longitude) {
@@ -111,7 +133,7 @@ public class DemandOfferController {
         return user;
     }
 
-    private void createOffer(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, User user) {
+    private Offer createOffer(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, User user) {
         Offer offer = new Offer();
         offer.setContentType(contentType);
         offer.setContentQuantity(contentQuantity);
@@ -120,14 +142,15 @@ public class DemandOfferController {
         offer.setAddress(address);
         offer.setUser(user);
         offerDao.save(offer);
+        return offer;
     }
 
     private Offer[] getAllOffersByUser(Integer userid) {
-        Offer[] offerArray = offerDao.findByUserUserid(userid);
+        Offer[] offerArray = offerDao.findByAvailableAndUserUserid(true, userid);
         return offerArray;
     }
 
-    private void createDemand(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, Integer distance, User user) {
+    private Demand createDemand(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, Integer distance, User user) {
         Demand demand = new Demand();
         demand.setContentType(contentType);
         demand.setContentQuantity(contentQuantity);
@@ -137,10 +160,11 @@ public class DemandOfferController {
         demand.setDistance(distance);
         demand.setUser(user);
         demandDao.save(demand);
+        return demand;
     }
 
     private Demand[] getAllDemandsByUser(Integer userid) {
-        Demand[] demandArray = demandDao.findByUserUserid(userid);
+        Demand[] demandArray = demandDao.findByAvailableAndUserUserid(true, userid);
         return demandArray;
     }
 
