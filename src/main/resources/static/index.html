@@ -93,7 +93,7 @@
                             <tr>
                                 <td>offers: </td>
                                 <td>
-                                    Your offers:
+                                    <h1>Your offers:</h1>
                                     <br />
                                     <div v-for="offer in userData.offerArray">
                                         Content type: {{offer.contentType}}
@@ -151,7 +151,7 @@
                             <tr>
                                 <td>demands: </td>
                                 <td>
-                                    Your demands:
+                                    <h1>Your demands:</h1>
                                     <br />
                                     <div v-for="demand in userData.demandArray">
                                         Content type: {{demand.contentType}}
@@ -210,6 +210,54 @@
                                     {{ errorMessage }}
 
                                     <button v-on:click="createDemand">create demand</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>matches: </td>
+                                <td>
+                                <h1>Your matches:</h1>
+                                <br />
+                                <div v-for="matches in userData.matchesArray">
+                                    for the demand:
+                                    <br />
+                                    Content type: {{matches.demand.contentType}}
+                                    <br />
+                                    Content quantity: {{matches.demand.contentQuantity}}
+                                    <br />
+                                    Expiry date: {{matches.demand.expiryDate}}
+                                    <br />
+                                    Address:
+                                    <br />
+                                    {{matches.demand.address.streetName}}, {{matches.demand.address.houseNumber}}
+                                    <br />
+                                    {{matches.demand.address.postCode}}, {{matches.demand.address.city}}
+                                    <br />
+                                    Look within ditance of {{matches.demand.distance}} meters.
+                                    <br />
+                                    _____
+                                    <br />
+                                    The following offers:
+                                    <br />
+                                    <div v-for="offer in matches.matchingOffers">
+                                        Content type: {{offer.contentType}}
+                                        <br />
+                                        Content quantity: {{offer.contentQuantity}}
+                                        <br />
+                                        Expiry date: {{offer.expiryDate}}
+                                        <br />
+                                        From: {{offer.user.name}}
+                                        <br />
+                                        Address:
+                                        <br />
+                                        {{offer.address.streetName}}, {{offer.address.houseNumber}}
+                                        <br />
+                                        {{offer.address.postCode}}, {{offer.address.city}}
+                                        <br />
+                                        ______
+                                    </div>
+                                </div>
+                                </td>
+                                <td>
                                 </td>
                             </tr>
                         </tbody>

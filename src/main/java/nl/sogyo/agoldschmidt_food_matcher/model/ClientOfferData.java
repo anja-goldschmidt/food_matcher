@@ -49,8 +49,6 @@ public class ClientOfferData {
 
     public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
-        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
-        // this.expiryDate = LocalDate.parse(expiryDate, formatter);
     }
 
     public String getStreetName() {

@@ -36,4 +36,12 @@ public class ClientDataTest{
         assertEquals(demandArray, clientData.getDemandArray());
     }
 
+    @Test
+    public void testMatches() {
+        Matches matches = new Matches();
+        Matches[] matchesArray = {matches};
+        clientData.setMatchesArray(matchesArray);
+        assertEquals(matchesArray, clientData.getMatchesArray());
+    }
+
 }

@@ -1,5 +1,6 @@
 package nl.sogyo.agoldschmidt_food_matcher.api;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -14,13 +15,15 @@ import nl.sogyo.agoldschmidt_food_matcher.dao.AddressDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
-import nl.sogyo.agoldschmidt_food_matcher.model.Address;
-import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
-import nl.sogyo.agoldschmidt_food_matcher.model.ClientDemandData;
-import nl.sogyo.agoldschmidt_food_matcher.model.ClientOfferData;
-import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
-import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
-import nl.sogyo.agoldschmidt_food_matcher.model.User;
+import nl.sogyo.agoldschmidt_food_matcher.model.*;
+// import nl.sogyo.agoldschmidt_food_matcher.model.Address;
+// import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
+// import nl.sogyo.agoldschmidt_food_matcher.model.ClientDemandData;
+// import nl.sogyo.agoldschmidt_food_matcher.model.ClientOfferData;
+// import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
+// import nl.sogyo.agoldschmidt_food_matcher.model.Matches;
+// import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
+// import nl.sogyo.agoldschmidt_food_matcher.model.User;
 
 @Controller
 @RequestMapping(path="profilepage")
@@ -55,10 +58,12 @@ public class DemandOfferController {
         updateDatabaseExpiredOfferDemand();
         Offer[] offerArray = getAllOffersByUser(clientOfferData.getUserid());
         Demand[] demandArray = getAllDemandsByUser(clientOfferData.getUserid());
-        ClientData clientData = new ClientData();
-        clientData.setUser(user);
-        clientData.setOfferArray(offerArray);
-        clientData.setDemandArray(demandArray);
+        Matches[] matchesArray = new Matches[demandArray.length];
+        for (int i = 0; i < demandArray.length; i++) {
+            Matches matches = findMatches(demandArray[i]);
+            Array.set(matchesArray, i, matches);
+        }
+        ClientData clientData = createClientData(user, offerArray, demandArray, matchesArray);
         return clientData;
     }
 
@@ -79,18 +84,14 @@ public class DemandOfferController {
                                     clientDemandData.getDistance(),
                                     user);
         updateDatabaseExpiredOfferDemand();
-        Offer[] offerMatchesContentTypeQuantity = offerDao.findByAvailableAndContentTypeAndContentQuantityGreaterThanEqual(true, demand.getContentType(), demand.getContentQuantity());
-        System.out.println("This is how many matching offers where found: " + offerMatchesContentTypeQuantity.length);
-        // Offer[] offerMatchesContentTypeQuantityDate;
-        // for (int i = 0; i < offerMatchesContentTypeQuantity.length; i++) {
-
-        // }
         Offer[] offerArray = getAllOffersByUser(clientDemandData.getUserid());
         Demand[] demandArray = getAllDemandsByUser(clientDemandData.getUserid());
-        ClientData clientData = new ClientData();
-        clientData.setUser(user);
-        clientData.setOfferArray(offerArray);
-        clientData.setDemandArray(demandArray);
+        Matches[] matchesArray = new Matches[demandArray.length];
+        for (int i = 0; i < demandArray.length; i++) {
+            Matches matches = findMatches(demandArray[i]);
+            Array.set(matchesArray, i, matches);
+        }
+        ClientData clientData = createClientData(user, offerArray, demandArray, matchesArray);
         return clientData;
     }
 
@@ -131,6 +132,23 @@ public class DemandOfferController {
         userDao.findById(userid).ifPresent(userList::add);
         User user = userList.get(0);
         return user;
+    }
+
+    private Matches findMatches(Demand demand) {
+        Offer[] offerMatches = offerDao.findByAvailableAndContentTypeAndContentQuantityGreaterThanEqual(true, demand.getContentType(), demand.getContentQuantity());
+        Matches matches = new Matches();
+        matches.setDemand(demand);
+        matches.setMatchingOffers(offerMatches);
+        return matches;
+    }
+
+    private ClientData createClientData(User user, Offer[] offerArray, Demand[] demandArray, Matches[] matchesArray) {
+        ClientData clientData = new ClientData();
+        clientData.setUser(user);
+        clientData.setOfferArray(offerArray);
+        clientData.setDemandArray(demandArray);
+        clientData.setMatchesArray(matchesArray);
+        return clientData;
     }
 
     private Offer createOffer(String contentType, Integer contentQuantity, LocalDate expiryDate, Address address, User user) {

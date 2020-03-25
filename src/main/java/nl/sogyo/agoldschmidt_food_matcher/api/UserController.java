@@ -4,10 +4,12 @@ import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
 import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
+import nl.sogyo.agoldschmidt_food_matcher.model.Matches;
 import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
 import nl.sogyo.agoldschmidt_food_matcher.model.User;
 import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -33,10 +35,12 @@ public class UserController {
         user = addNewUser(user);
         Offer[] offerArray = getAllOffersByUser(user.getUserid());
         Demand[] demandArray = getAllDemandsByUser(user.getUserid());
-        ClientData clientData = new ClientData();
-        clientData.setUser(user);
-        clientData.setOfferArray(offerArray);
-        clientData.setDemandArray(demandArray);
+        Matches[] matchesArray = new Matches[demandArray.length];
+        for (int i = 0; i < demandArray.length; i++) {
+            Matches matches = findMatches(demandArray[i]);
+            Array.set(matchesArray, i, matches);
+        }
+        ClientData clientData = createClientData(user, offerArray, demandArray, matchesArray);
         return clientData;
     }
 
@@ -73,6 +77,23 @@ public class UserController {
     private Demand[] getAllDemandsByUser(Integer userid) {
         Demand[] demandArray = demandDao.findByAvailableAndUserUserid(true, userid);
         return demandArray;
+    }
+
+    private Matches findMatches(Demand demand) {
+        Offer[] offerMatches = offerDao.findByAvailableAndContentTypeAndContentQuantityGreaterThanEqual(true, demand.getContentType(), demand.getContentQuantity());
+        Matches matches = new Matches();
+        matches.setDemand(demand);
+        matches.setMatchingOffers(offerMatches);
+        return matches;
+    }
+
+    private ClientData createClientData(User user, Offer[] offerArray, Demand[] demandArray, Matches[] matchesArray) {
+        ClientData clientData = new ClientData();
+        clientData.setUser(user);
+        clientData.setOfferArray(offerArray);
+        clientData.setDemandArray(demandArray);
+        clientData.setMatchesArray(matchesArray);
+        return clientData;
     }
 
     @GetMapping(path="/adminUser")

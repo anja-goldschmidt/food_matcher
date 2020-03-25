@@ -8,6 +8,8 @@ public class ClientData {
 
     private Demand[] demandArray;
 
+    private Matches[] matchesArray;
+
     public User getUser() {
         return this.user;
     }
@@ -30,6 +32,14 @@ public class ClientData {
 
     public void setDemandArray(Demand[] demandArray) {
         this.demandArray = demandArray;
+    }
+
+    public Matches[] getMatchesArray() {
+        return this.matchesArray;
+    }
+
+    public void setMatchesArray(Matches[] matchesArray) {
+        this.matchesArray = matchesArray;
     }
 
 }
