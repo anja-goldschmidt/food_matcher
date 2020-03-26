@@ -19,7 +19,8 @@
             v-else
             v-bind:user-data="userData"
             v-on:offer-created="createOffer"
-            v-on:demand-created="createDemand">
+            v-on:demand-created="createDemand"
+            v-on:offer-selected="selectOffer">
         </profile-screen>
     </div>
 
@@ -78,8 +79,9 @@
                     <table style="width: 100%;" border="1">
                         <tbody>
                             <tr>
-                                <td>personal information: </td>
                                 <td>
+                                    <strong>Your personal information: </strong>
+                                    <br />
                                     Your user id: {{userData.user.userid}}
                                     <br />
                                     Your name: {{userData.user.name}}
@@ -91,9 +93,8 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>offers: </td>
                                 <td>
-                                    <h1>Your offers:</h1>
+                                    <strong>Your offers:</strong>
                                     <br />
                                     <div v-for="offer in userData.offerArray">
                                         Content type: {{offer.contentType}}
@@ -149,9 +150,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>demands: </td>
                                 <td>
-                                    <h1>Your demands:</h1>
+                                    <strong>Your demands:</strong>
                                     <br />
                                     <div v-for="demand in userData.demandArray">
                                         Content type: {{demand.contentType}}
@@ -213,9 +213,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>matches: </td>
                                 <td>
-                                <h1>Your matches:</h1>
+                                <strong>Your matches:</strong>
                                 <br />
                                 <div v-for="matches in userData.matchesArray">
                                     for the demand:
@@ -234,7 +233,7 @@
                                     <br />
                                     Look within ditance of {{matches.demand.distance}} meters.
                                     <br />
-                                    _____
+                                    <strong>_____</strong>
                                     <br />
                                     The following offers:
                                     <br />
@@ -253,9 +252,19 @@
                                         <br />
                                         {{offer.address.postCode}}, {{offer.address.city}}
                                         <br />
+                                        <button v-on:click="selectOffer(offer.offer_id, matches.demand.demand_id)">select offer</button>
+                                        <br />
                                         ______
                                     </div>
                                 </div>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Your matched selection pairs: </strong>
+                                    <br />
                                 </td>
                                 <td>
                                 </td>
@@ -380,6 +389,9 @@
                     this.errorMessage = "";
 
                     this.$emit('demand-created', this.contentType, this.contentQuantity, this.expiryDate, this.streetName, this.houseNumber, this.postCode, this.city, this.country, this.latitude, this.longitude, this.distance, this.userData.user.userid);
+                },
+                selectOffer(offer_id, demand_id) {
+                    this.$emit('offer-selected', offer_id, demand_id, this.userData.user.userid);
                 }
             }
         });
@@ -438,6 +450,20 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({contentType: contentType, contentQuantity: contentQuantity, expiryDate: expiryDate, streetName: streetName, houseNumber: houseNumber, postCode: postCode, city: city, country: country, latitude: latitude, longitude: longitude, distance: distance, userid: userid})
+                    });
+                    const userData = await response.json();
+
+                    this.userData = userData;
+                },
+
+                async selectOffer(offer_id, demand_id, userid) {
+                    const response = await fetch('profilepage/selectionhandler', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({offer_id: offer_id, demand_id: demand_id, userid: userid})
                     });
                     const userData = await response.json();
 

@@ -44,4 +44,17 @@ public class ClientDataTest{
         assertEquals(matchesArray, clientData.getMatchesArray());
     }
 
+    @Test
+    public void testDemandOfferPair() {
+        Demand demand = new Demand();
+        Offer offer = new Offer();
+        DemandOfferPair demandOfferPair = new DemandOfferPair();
+        demandOfferPair.setDemand(demand);
+        demandOfferPair.setOffer(offer);
+        DemandOfferPair[] demandOfferPairArray = {demandOfferPair};
+        DemandOfferPair[][] demandOfferPairMultiArray = {demandOfferPairArray, demandOfferPairArray};
+        clientData.setSelectionPairs(demandOfferPairMultiArray);
+        assertEquals(demandOfferPairMultiArray, clientData.getSelectionPairs());
+    }
+
 }

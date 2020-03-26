@@ -10,6 +10,9 @@ public class ClientData {
 
     private Matches[] matchesArray;
 
+    private DemandOfferPair[][] selectionPairs;
+
+
     public User getUser() {
         return this.user;
     }
@@ -40,6 +43,14 @@ public class ClientData {
 
     public void setMatchesArray(Matches[] matchesArray) {
         this.matchesArray = matchesArray;
+    }
+
+    public DemandOfferPair[][] getSelectionPairs() {
+        return this.selectionPairs;
+    }
+
+    public void setSelectionPairs(DemandOfferPair[][] selectionPairs) {
+        this.selectionPairs = selectionPairs;
     }
 
 }

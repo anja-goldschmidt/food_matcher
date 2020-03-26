@@ -21,16 +21,20 @@ class ResponseAssembler {
     private OfferDao offerDao;
 
     void updateDatabaseExpiredOfferDemand() {
-        LocalDate today = LocalDate.now();
-        Offer[] expiredOffers = offerDao.findByAvailableAndExpiryDateLessThan(true, today);
-        for (int i = 0; i < expiredOffers.length; i++) {
-            expiredOffers[i].setAvailable(false);
-            offerDao.save(expiredOffers[i]);
-        }
-        Demand[] expiredDemands = demandDao.findByAvailableAndExpiryDateLessThan(true, today);
-        for (int i = 0; i < expiredDemands.length; i++) {
-            expiredDemands[i].setAvailable(false);
-            demandDao.save(expiredDemands[i]);
+        try {
+            LocalDate today = LocalDate.now();
+            Offer[] expiredOffers = offerDao.findByAvailableAndExpiryDateLessThan(true, today);
+            for (int i = 0; i < expiredOffers.length; i++) {
+                expiredOffers[i].setAvailable(false);
+                offerDao.save(expiredOffers[i]);
+            }
+            Demand[] expiredDemands = demandDao.findByAvailableAndExpiryDateLessThan(true, today);
+            for (int i = 0; i < expiredDemands.length; i++) {
+                expiredDemands[i].setAvailable(false);
+                demandDao.save(expiredDemands[i]);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -47,7 +51,7 @@ class ResponseAssembler {
     Matches[] findMatches(Demand[] demandArray) {
         Matches[] matchesArray = new Matches[demandArray.length];
         for (int i = 0; i < demandArray.length; i++) {
-            Offer[] offerMatches = offerDao.findByAvailableAndContentTypeAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
+            Offer[] offerMatches = offerDao.findByAvailableAndContentTypeIgnoreCaseAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
             Matches matches = new Matches();
             matches.setDemand(demandArray[i]);
             matches.setMatchingOffers(offerMatches);

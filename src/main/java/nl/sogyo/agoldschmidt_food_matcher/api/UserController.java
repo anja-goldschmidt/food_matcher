@@ -11,7 +11,6 @@ import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,7 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @Autowired 
+    @Autowired
     private OfferDao offerDao;
 
     @Autowired
@@ -35,16 +34,12 @@ public class UserController {
         user = addNewUser(user);
         Offer[] offerArray = getAllOffersByUser(user.getUserid());
         Demand[] demandArray = getAllDemandsByUser(user.getUserid());
-        Matches[] matchesArray = new Matches[demandArray.length];
-        for (int i = 0; i < demandArray.length; i++) {
-            Matches matches = findMatches(demandArray[i]);
-            Array.set(matchesArray, i, matches);
-        }
+        Matches[] matchesArray = findMatches(demandArray);
         ClientData clientData = createClientData(user, offerArray, demandArray, matchesArray);
         return clientData;
     }
 
-    private void updateDatabaseExpiredOfferDemand() {
+    void updateDatabaseExpiredOfferDemand() {
         LocalDate today = LocalDate.now();
         Offer[] expiredOffers = offerDao.findByAvailableAndExpiryDateLessThan(true, today);
         for (int i = 0; i < expiredOffers.length; i++) {
@@ -79,12 +74,16 @@ public class UserController {
         return demandArray;
     }
 
-    private Matches findMatches(Demand demand) {
-        Offer[] offerMatches = offerDao.findByAvailableAndContentTypeAndContentQuantityGreaterThanEqual(true, demand.getContentType(), demand.getContentQuantity());
-        Matches matches = new Matches();
-        matches.setDemand(demand);
-        matches.setMatchingOffers(offerMatches);
-        return matches;
+    Matches[] findMatches(Demand[] demandArray) {
+        Matches[] matchesArray = new Matches[demandArray.length];
+        for (int i = 0; i < demandArray.length; i++) {
+            Offer[] offerMatches = offerDao.findByAvailableAndContentTypeIgnoreCaseAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
+            Matches matches = new Matches();
+            matches.setDemand(demandArray[i]);
+            matches.setMatchingOffers(offerMatches);
+            Array.set(matchesArray, i, matches);
+        }
+        return matchesArray;
     }
 
     private ClientData createClientData(User user, Offer[] offerArray, Demand[] demandArray, Matches[] matchesArray) {
@@ -96,16 +95,16 @@ public class UserController {
         return clientData;
     }
 
-    @GetMapping(path="/adminUser")
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userDao.findAll();
-    }
+    // @GetMapping(path="/adminUser")
+    // public @ResponseBody Iterable<User> getAllUsers() {
+    //     return userDao.findAll();
+    // }
 
-    @GetMapping(path="/adminUser1")
-    public @ResponseBody User getUserById(@RequestParam Integer id) {
-        ArrayList<User> userList = new ArrayList<>();
-        userDao.findById(id).ifPresent(userList::add);
-        return userList.get(0);
-    }
+    // @GetMapping(path="/adminUser1")
+    // public @ResponseBody User getUserById(@RequestParam Integer id) {
+    //     ArrayList<User> userList = new ArrayList<>();
+    //     userDao.findById(id).ifPresent(userList::add);
+    //     return userList.get(0);
+    // }
 
 }
