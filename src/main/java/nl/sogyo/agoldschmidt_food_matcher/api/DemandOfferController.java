@@ -87,15 +87,18 @@ public class DemandOfferController {
         Demand demand = getDemandById(clientSelectionData.getDemand_id());
         User user = findUser(clientSelectionData.getUserid());
         if (offer.isAvailable()) {
-            System.out.println("The offer is available.");
             updateDatabaseSelectedOfferDemand(demand, offer);
-        } else {
-            System.out.println("The offer is not available.");
         }
         Offer[] offerArray = getAllOffersByUser(user.getUserid());
         Demand[] demandArray = getAllDemandsByUser(user.getUserid());
         Matches[] matchesArray = findMatches(demandArray);
         DemandOfferPair[][] selectionPairs = createSelectionPairs(user);
+        // System.out.println("These are the demands and offers in the first inner array of the selections called from within the selectionHandler():");
+        // for (int j = 0; j < selectionPairs[0].length; j++) {
+        //     System.out.println("This is the offer_id of matched pair number " + j + ": " + selectionPairs[0][j].getOffer().getOffer_id());
+        //     System.out.println("This is the demand_id of matched pair number " + j + ": " + selectionPairs[0][j].getDemand().getDemand_id());
+        // }
+        // System.out.println("This is the number of matched demands and offers for demands by " + user.getName() + ": " + selectionPairs[0].length);
         ClientData clientData = createClientData(user, offerArray, demandArray, matchesArray, selectionPairs);
         return clientData;
     }
@@ -162,7 +165,13 @@ public class DemandOfferController {
     }
 
     private DemandOfferPair[][] createSelectionPairs(User user) {
+        DemandOfferPair[] matchedDemandsAndTheirOffers = createMatchedDemandsAndTheirOffers(user);
+        DemandOfferPair[] matchedOffersAndTheirDemands = createMatchedOffersAndTheirDemands(user);
+        DemandOfferPair[][] selectionPairs = {matchedDemandsAndTheirOffers, matchedOffersAndTheirDemands};
+        return selectionPairs;
+    }
 
+    private DemandOfferPair[] createMatchedDemandsAndTheirOffers(User user) {
         Demand[] unavailableDemandsByUser = demandDao.findByAvailableAndUserUserid(false, user.getUserid());
         ArrayList<Demand> matchedDemandsByUser = new ArrayList<>();
         for (int i = 0; i < unavailableDemandsByUser.length; i++) {
@@ -174,11 +183,17 @@ public class DemandOfferController {
         for (int i = 0; i < matchedDemandsByUser.size(); i++) {
             DemandOfferPair demandOfferPair = new DemandOfferPair();
             Offer offer = getOfferById(matchedDemandsByUser.get(i).getOffer().getOffer_id());
-            demandOfferPair.setDemand(matchedDemandsByUser.get(i));
+            offer.setDemand(null);
+            Demand demand = matchedDemandsByUser.get(i);
+            demand.setOffer(null);
+            demandOfferPair.setDemand(demand);
             demandOfferPair.setOffer(offer);
             Array.set(matchedDemandsAndTheirOffers, i, demandOfferPair);
         }
+        return matchedDemandsAndTheirOffers;
+    }
 
+    private DemandOfferPair[] createMatchedOffersAndTheirDemands(User user) {
         Offer[] unavailableOffersByUser = offerDao.findByAvailableAndUserUserid(false, user.getUserid());
         ArrayList<Offer> matchedOffersByUser = new ArrayList<>();
         for (int i = 0; i < unavailableOffersByUser.length; i++) {
@@ -190,13 +205,14 @@ public class DemandOfferController {
         for (int i = 0; i < matchedOffersByUser.size(); i++) {
             DemandOfferPair demandOfferPair = new DemandOfferPair();
             Demand demand = getDemandById(matchedOffersByUser.get(i).getDemand().getDemand_id());
-            demandOfferPair.setOffer(matchedOffersByUser.get(i));
+            demand.setOffer(null);
+            Offer offer = matchedOffersByUser.get(i);
+            offer.setDemand(null);
+            demandOfferPair.setOffer(offer);
             demandOfferPair.setDemand(demand);
             Array.set(matchedOffersAndTheirDemands, i, demandOfferPair);
         }
-
-        DemandOfferPair[][] selectionPairs = {matchedDemandsAndTheirOffers, matchedOffersAndTheirDemands};
-        return selectionPairs;
+        return matchedOffersAndTheirDemands;
     }
 
     private ClientData createClientData(User user, Offer[] offerArray, Demand[] demandArray, Matches[] matchesArray, DemandOfferPair[][] selectionPairs) {

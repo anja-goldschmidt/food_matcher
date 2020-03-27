@@ -108,6 +108,7 @@
                                         {{offer.address.streetName}}, {{offer.address.houseNumber}}
                                         <br />
                                         {{offer.address.postCode}}, {{offer.address.city}}
+                                        <br />
                                         ______
                                     </div>
                                 </td>
@@ -217,7 +218,7 @@
                                 <strong>Your matches:</strong>
                                 <br />
                                 <div v-for="matches in userData.matchesArray">
-                                    for the demand:
+                                    <strong>For the demand:</strong>
                                     <br />
                                     Content type: {{matches.demand.contentType}}
                                     <br />
@@ -263,8 +264,86 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <strong>Your matched selection pairs: </strong>
+                                    <strong>Your matched selection pairs for your demands: </strong>
                                     <br />
+                                    <div v-for="demandOfferPair in userData.selectionPairs[0]">
+                                    <strong>For the demand:</strong>
+                                    <br />
+                                    Content type: {{demandOfferPair.demand.contentType}}
+                                    <br />
+                                    Content quantity: {{demandOfferPair.demand.contentQuantity}}
+                                    <br />
+                                    Expiry date: {{demandOfferPair.demand.expiryDate}}
+                                    <br />
+                                    Address:
+                                    <br />
+                                    {{demandOfferPair.demand.address.streetName}}, {{demandOfferPair.demand.address.houseNumber}}
+                                    <br />
+                                    {{demandOfferPair.demand.address.postCode}}, {{demandOfferPair.demand.address.city}}
+                                    <br />
+                                    Look within ditance of {{demandOfferPair.demand.distance}} meters.
+                                    <br />
+                                    <strong>the following offer:</strong>
+                                    <br />
+                                    Content type: {{demandOfferPair.offer.contentType}}
+                                    <br />
+                                    Content quantity: {{demandOfferPair.offer.contentQuantity}}
+                                    <br />
+                                    Expiry date: {{demandOfferPair.offer.expiryDate}}
+                                    <br />
+                                    From: {{demandOfferPair.offer.user.name}}
+                                    <br />
+                                    Address:
+                                    <br />
+                                    {{demandOfferPair.offer.address.streetName}}, {{demandOfferPair.offer.address.houseNumber}}
+                                    <br />
+                                    {{demandOfferPair.offer.address.postCode}}, {{demandOfferPair.offer.address.city}}
+                                    <br />
+                                    Contact {{demandOfferPair.offer.user.name}} at: {{demandOfferPair.offer.user.email}}
+                                    <br />
+                                    <strong>_____</strong>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Your matched selection pairs for your offers: </strong>
+                                    <br />
+                                    <div v-for="demandOfferPair in userData.selectionPairs[1]">
+                                    <strong>For the offer:</strong>
+                                    <br />
+                                    Content type: {{demandOfferPair.offer.contentType}}
+                                    <br />
+                                    Content quantity: {{demandOfferPair.offer.contentQuantity}}
+                                    <br />
+                                    Expiry date: {{demandOfferPair.offer.expiryDate}}
+                                    <br />
+                                    Address:
+                                    <br />
+                                    {{demandOfferPair.offer.address.streetName}}, {{demandOfferPair.offer.address.houseNumber}}
+                                    <br />
+                                    {{demandOfferPair.offer.address.postCode}}, {{demandOfferPair.offer.address.city}}
+                                    <br />
+                                    <strong>the following demand:</strong>
+                                    <br />
+                                    Content type: {{demandOfferPair.demand.contentType}}
+                                    <br />
+                                    Content quantity: {{demandOfferPair.demand.contentQuantity}}
+                                    <br />
+                                    Expiry date: {{demandOfferPair.demand.expiryDate}}
+                                    <br />
+                                    From: {{demandOfferPair.demand.user.name}}
+                                    <br />
+                                    Address:
+                                    <br />
+                                    {{demandOfferPair.demand.address.streetName}}, {{demandOfferPair.demand.address.houseNumber}}
+                                    <br />
+                                    {{demandOfferPair.demand.address.postCode}}, {{demandOfferPair.demand.address.city}}
+                                    <br />
+                                    Contact {{demandOfferPair.demand.user.name}} at: {{demandOfferPair.demand.user.email}}
+                                    <br />
+                                    <strong>_____</strong>
                                 </td>
                                 <td>
                                 </td>
