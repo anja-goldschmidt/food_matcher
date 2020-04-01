@@ -5,6 +5,7 @@ import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
 import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
 import nl.sogyo.agoldschmidt_food_matcher.model.DemandOfferPair;
+import nl.sogyo.agoldschmidt_food_matcher.model.LocationMatcher;
 import nl.sogyo.agoldschmidt_food_matcher.model.Matches;
 import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
 import nl.sogyo.agoldschmidt_food_matcher.model.User;
@@ -29,6 +30,8 @@ public class UserController {
 
     @Autowired
     private DemandDao demandDao;
+
+    private LocationMatcher locationMatcher = new LocationMatcher();
 
     @PostMapping(path="login")
     public @ResponseBody ClientData userHandler (@RequestBody User user) {
@@ -56,16 +59,25 @@ public class UserController {
         }
     }
 
-    Matches[] findMatches(Demand[] demandArray) {
-        Matches[] matchesArray = new Matches[demandArray.length];
-        for (int i = 0; i < demandArray.length; i++) {
-            Offer[] offerMatches = offerDao.findByAvailableAndContentTypeIgnoreCaseAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
-            Matches matches = new Matches();
-            matches.setDemand(demandArray[i]);
-            matches.setMatchingOffers(offerMatches);
-            Array.set(matchesArray, i, matches);
+    private Matches[] findMatches(Demand[] demandArray) {
+        if (demandArray.length > 0) {
+            Matches[] matchesArray = new Matches[demandArray.length];
+            for (int i = 0; i < demandArray.length; i++) {
+                Offer[] offerMatches = offerDao.findByAvailableAndContentTypeIgnoreCaseAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
+                Matches matches = new Matches();
+                matches.setDemand(demandArray[i]);
+                matches.setMatchingOffers(offerMatches);
+                Array.set(matchesArray, i, matches);
+            }
+            for (int i = 0; i < matchesArray.length; i++) {
+                Matches locationContentMatches = locationMatcher.matchViaGpsLocation(matchesArray[i]);
+                Array.set(matchesArray, i, locationContentMatches);
+            }
+            return matchesArray;
+        } else {
+            System.out.println("There are no demands to match.");
+            return null;
         }
-        return matchesArray;
     }
 
     private DemandOfferPair[][] createSelectionPairs(User user) {
