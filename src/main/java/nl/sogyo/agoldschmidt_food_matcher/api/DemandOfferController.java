@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import nl.sogyo.agoldschmidt_food_matcher.dao.AddressDao;
-import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
-import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
-import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
+import nl.sogyo.agoldschmidt_food_matcher.dao.*;
 import nl.sogyo.agoldschmidt_food_matcher.model.*;
 
 @Controller
@@ -95,12 +92,6 @@ public class DemandOfferController {
         Demand[] demandArray = getAllDemandsByUser(user.getUserid());
         Matches[] matchesArray = findMatches(demandArray);
         DemandOfferPair[][] selectionPairs = createSelectionPairs(user);
-        // System.out.println("These are the demands and offers in the first inner array of the selections called from within the selectionHandler():");
-        // for (int j = 0; j < selectionPairs[0].length; j++) {
-        //     System.out.println("This is the offer_id of matched pair number " + j + ": " + selectionPairs[0][j].getOffer().getOffer_id());
-        //     System.out.println("This is the demand_id of matched pair number " + j + ": " + selectionPairs[0][j].getDemand().getDemand_id());
-        // }
-        // System.out.println("This is the number of matched demands and offers for demands by " + user.getName() + ": " + selectionPairs[0].length);
         ClientData clientData = createClientData(user, offerArray, demandArray, matchesArray, selectionPairs);
         return clientData;
     }
@@ -170,7 +161,6 @@ public class DemandOfferController {
             }
             return matchesArray;
         } else {
-            System.out.println("There are no demands to match.");
             return null;
         }
     }

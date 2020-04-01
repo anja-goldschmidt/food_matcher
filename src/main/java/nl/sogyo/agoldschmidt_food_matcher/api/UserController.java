@@ -3,13 +3,7 @@ package nl.sogyo.agoldschmidt_food_matcher.api;
 import nl.sogyo.agoldschmidt_food_matcher.dao.DemandDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.OfferDao;
 import nl.sogyo.agoldschmidt_food_matcher.dao.UserDao;
-import nl.sogyo.agoldschmidt_food_matcher.model.Demand;
-import nl.sogyo.agoldschmidt_food_matcher.model.DemandOfferPair;
-import nl.sogyo.agoldschmidt_food_matcher.model.LocationMatcher;
-import nl.sogyo.agoldschmidt_food_matcher.model.Matches;
-import nl.sogyo.agoldschmidt_food_matcher.model.Offer;
-import nl.sogyo.agoldschmidt_food_matcher.model.User;
-import nl.sogyo.agoldschmidt_food_matcher.model.ClientData;
+import nl.sogyo.agoldschmidt_food_matcher.model.*;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -75,7 +69,6 @@ public class UserController {
             }
             return matchesArray;
         } else {
-            System.out.println("There are no demands to match.");
             return null;
         }
     }
