@@ -32,6 +32,8 @@ public class DemandOfferController {
     @Autowired
     private UserDao userDao;
 
+    private LocationMatcher locationMatcher = new LocationMatcher();
+
     @PostMapping(path="/offerhandler")
     public @ResponseBody ClientData offerHandler(@RequestBody ClientOfferData clientOfferData) {
         Address address = createAddress(clientOfferData.getStreetName(), 
@@ -153,15 +155,24 @@ public class DemandOfferController {
     }
 
     private Matches[] findMatches(Demand[] demandArray) {
-        Matches[] matchesArray = new Matches[demandArray.length];
-        for (int i = 0; i < demandArray.length; i++) {
-            Offer[] offerMatches = offerDao.findByAvailableAndContentTypeIgnoreCaseAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
-            Matches matches = new Matches();
-            matches.setDemand(demandArray[i]);
-            matches.setMatchingOffers(offerMatches);
-            Array.set(matchesArray, i, matches);
+        if (demandArray.length > 0) {
+            Matches[] matchesArray = new Matches[demandArray.length];
+            for (int i = 0; i < demandArray.length; i++) {
+                Offer[] offerMatches = offerDao.findByAvailableAndContentTypeIgnoreCaseAndContentQuantityGreaterThanEqual(true, demandArray[i].getContentType(), demandArray[i].getContentQuantity());
+                Matches matches = new Matches();
+                matches.setDemand(demandArray[i]);
+                matches.setMatchingOffers(offerMatches);
+                Array.set(matchesArray, i, matches);
+            }
+            for (int i = 0; i < matchesArray.length; i++) {
+                Matches locationContentMatches = locationMatcher.matchViaGpsLocation(matchesArray[i]);
+                Array.set(matchesArray, i, locationContentMatches);
+            }
+            return matchesArray;
+        } else {
+            System.out.println("There are no demands to match.");
+            return null;
         }
-        return matchesArray;
     }
 
     private DemandOfferPair[][] createSelectionPairs(User user) {
